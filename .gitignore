@@ -1,3 +1,9 @@
+# Ignore macOS system files
+.DS_Store
+
+# Ignore IDE files
+.idea
+.vscode
 
 ###> symfony/framework-bundle ###
 /.env.local
