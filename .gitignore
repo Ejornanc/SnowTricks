@@ -5,6 +5,9 @@
 .idea
 .vscode
 
+# BDD Files
+BDD
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
