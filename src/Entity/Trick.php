@@ -40,7 +40,7 @@ class Trick
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?User $user = null;
 
     /**
@@ -55,17 +55,10 @@ class Trick
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'trick', orphanRemoval: true)]
     private Collection $media;
 
-    /**
-     * @var Collection<int, Favorite>
-     */
-    #[ORM\OneToMany(targetEntity: Favorite::class, mappedBy: 'trick', orphanRemoval: true)]
-    private Collection $favorites;
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->media = new ArrayCollection();
-        $this->favorites = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -218,36 +211,6 @@ class Trick
         return $this;
     }
 
-    /**
-     * @return Collection<int, Favorite>
-     */
-    public function getFavorites(): Collection
-    {
-        return $this->favorites;
-    }
-
-    public function addFavorite(Favorite $favorite): static
-    {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites->add($favorite);
-            $favorite->setTrick($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFavorite(Favorite $favorite): static
-    {
-        if ($this->favorites->removeElement($favorite)) {
-            // set the owning side to null (unless already changed)
-            if ($favorite->getTrick() === $this) {
-                $favorite->setTrick(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getTrickType(): ?TrickType
     {
         return $this->tricktype;
@@ -257,5 +220,9 @@ class Trick
     {
         $this->tricktype = $tricktype;
         return $this;
+    }
+
+    public function findAll()
+    {
     }
 }

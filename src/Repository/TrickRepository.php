@@ -40,4 +40,16 @@ class TrickRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    /**
+     * @return Trick[] Returns an array of Trick objects
+     */
+    public function findAllWithMedia(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.media','m')
+            ->addSelect('m')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

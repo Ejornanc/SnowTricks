@@ -5,16 +5,22 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\Trick;
 use App\Entity\Comment;
-use App\Entity\Favorite;
 use App\Entity\Media;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use App\Enum\Difficulty;
 use App\Enum\TrickType;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $hasher;
+
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
@@ -22,9 +28,10 @@ class AppFixtures extends Fixture
         $users = [];
         for ($i = 0; $i < 5; $i++) {
             $user = new User();
+            $hashedPassword = $this->hasher->hashPassword($user, 'password');
             $user->setUsername($faker->unique()->userName)
                 ->setEmail($faker->unique()->email)
-                ->setPassword(password_hash('password', PASSWORD_BCRYPT));
+                ->setPassword($hashedPassword);
 
             $manager->persist($user);
             $users[] = $user;
@@ -70,14 +77,6 @@ class AppFixtures extends Fixture
                 ->setTrick($faker->randomElement($tricks));
 
             $manager->persist($media);
-        }
-
-        for ($i = 0; $i < 15; $i++) {
-            $favorite = new Favorite();
-            $favorite->setUser($faker->randomElement($users))
-                ->setTrick($faker->randomElement($tricks));
-
-            $manager->persist($favorite);
         }
 
         $manager->flush();
