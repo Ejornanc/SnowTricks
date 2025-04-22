@@ -1,0 +1,33 @@
+<nav class="navbar-container">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <ul class="navbar">
+        <li><a href="{{ path('home') }}" >Home</a></li>
+        <li><a href="{{ path('trick_new') }}">Tricks</a></li>
+        {% if app.user %}
+        <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+        {% else %}
+        <li><a href="{{ path('app_login') }}">Sign in</a></li>
+        <li><a href="{{ path('app_register') }}">Sign up</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<nav class="mobile-navbar">
+    <a href="{{ path('home') }}">
+        <i class="fas fa-home"></i>
+    </a>
+
+    <a href="{{ path('trick') }}">
+        <i class="fas fa-snowboarding"></i>
+    </a>
+
+    {% if app.user %}
+        <a href="{{ path('app_logout') }}">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+    {% else %}
+        <a href="{{ path('app_login') }}">
+            <i class="fas fa-sign-in-alt"></i>
+        </a>
+    {% endif %}
+</nav>

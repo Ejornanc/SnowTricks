@@ -1,0 +1,26 @@
+footer {
+    background-color: #102B44;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .large-display {
+        display: none;
+    }
+}
+@media (min-width: 768px) {
+    .mobile-navbar {
+        display: none;
+    }
+}
+

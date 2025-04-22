@@ -1,0 +1,40 @@
+@media (min-width: 768px) {
+    #MobileDisplay {
+        display: none;
+    }
+
+    .navbar {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+    }
+
+    .navbar li + li::before {
+        content: "|";
+        color: #AEE1F9;
+        margin: 0 15px;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .navbar a:visited {
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .navbar a:hover {
+        font-weight: bold;
+        color: #AEE1F9;
+        text-decoration: underline;
+    }
+
+    .navbar a:active {
+        font-weight: bold;
+        color: #ffffff;
+    }
+}

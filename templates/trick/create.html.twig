@@ -1,0 +1,18 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Nouveau trick{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <style>
+        /* Styles CSS pour la liste des articles */
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Créer un nouveau trick</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">Créer</button>
+    {{ form_end(form) }}
+{% endblock %}
