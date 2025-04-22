@@ -1,0 +1,32 @@
+@media (max-width: 768px) {
+    #HeaderLargeDisplay {
+    display: none;
+}
+    .mobile-navbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background-color: #102B44;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid #AEE1F9;
+        z-index: 1000;
+    }
+
+    .mobile-navbar a {
+        color: #AEE1F9;
+        text-decoration: none;
+        font-size: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mobile-navbar a span {
+        font-size: 10px;
+        color: white;
+    }
+}

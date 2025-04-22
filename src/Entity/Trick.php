@@ -221,4 +221,8 @@ class Trick
         $this->tricktype = $tricktype;
         return $this;
     }
+
+    public function findAll()
+    {
+    }
 }
