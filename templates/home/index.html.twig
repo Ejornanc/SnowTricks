@@ -4,13 +4,25 @@
 {% block head %}
     {{ parent() }}
     <style>
-
+        .Home-index {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            padding: 5%;
+            margin: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+            0 10px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            text-align: center;
+            background-color: whitesmoke;
+        }
     </style>
 {% endblock %}
 
 {% block content %}
 <section>
-    <P> Lorem ipsum dolor sit amet eirmod odio elitr nibh et tincidunt enim sit stet et tempor consequat labore diam gubergren id est. Consetetur vel mazim eum ea illum nonummy. Dolor laoreet et est lorem sit velit rebum takimata consetetur voluptua.<br>Dolores ipsum diam sea invidunt erat esse illum consectetuer blandit no ut ipsum aliquyam. Stet commodo erat. Invidunt sit aliquyam aliquyam. Sit ut stet sit lorem stet iriure ea ipsum.<br>Ut clita et molestie. Euismod et aliquam consetetur. Ut accusam amet dolore sed dolores clita tempor ut ut lorem amet accusam imperdiet dolor minim consectetuer et.<br>Nam vel sed at magna erat vulputate lorem sed sed aliquyam doming diam consequat sit. Ea sit et takimata duis tempor duo in diam vero minim ipsum lorem praesent aliquyam tation eirmod sed.<br>At tempor est dolor autem dolor rebum sed stet ea. Lorem diam dolores kasd iriure duo. Magna lorem in. </P>
+    <P class="Home-index"> Lorem ipsum dolor sit amet eirmod odio elitr nibh et tincidunt enim sit stet et tempor consequat labore diam gubergren id est. Consetetur vel mazim eum ea illum nonummy. Dolor laoreet et est lorem sit velit rebum takimata consetetur voluptua.<br>Dolores ipsum diam sea invidunt erat esse illum consectetuer blandit no ut ipsum aliquyam. Stet commodo erat. Invidunt sit aliquyam aliquyam. Sit ut stet sit lorem stet iriure ea ipsum.<br>Ut clita et molestie. Euismod et aliquam consetetur. Ut accusam amet dolore sed dolores clita tempor ut ut lorem amet accusam imperdiet dolor minim consectetuer et.<br>Nam vel sed at magna erat vulputate lorem sed sed aliquyam doming diam consequat sit. Ea sit et takimata duis tempor duo in diam vero minim ipsum lorem praesent aliquyam tation eirmod sed.<br>At tempor est dolor autem dolor rebum sed stet ea. Lorem diam dolores kasd iriure duo. Magna lorem in. </P>
     {% include 'trick/index.html.twig' %}
 </section>
     {% endblock %}

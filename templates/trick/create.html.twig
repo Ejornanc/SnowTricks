@@ -9,10 +9,22 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Créer un nouveau trick</h1>
+<div class="form-page">
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit">Créer</button>
-    {{ form_end(form) }}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+    <h1 class="form-title">Créer un nouveau trick</h1>
+    <form method="post" class="form-form">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Créer</button>
+        {{ form_end(form) }}
+    </form>
+    {% else %}
+        <h2>Vous devez être connecté pour créer un trick</h2>
+        <p>
+            <a href="{{ path('app_login') }}">Se connecter</a> ou
+            <a href="{{ path('app_register') }}">Créer un compte</a>
+        </p>
+    {% endif %}
+</div>
 {% endblock %}
