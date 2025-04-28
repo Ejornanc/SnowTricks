@@ -8,8 +8,27 @@
 }
 
 .logo img {
-    width: 100px;
-    height: auto;
+    width: auto;
+    height: 80px;
+}
+
+.logo {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.logo a{
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+}
+.logo a:hover {
+    font-weight: bold;
+    color: #AEE1F9;
+    text-decoration: underline;
 }
 
 header h1 {

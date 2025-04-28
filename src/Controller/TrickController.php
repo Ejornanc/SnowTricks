@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
-use App\Form\TrickType;
+use App\Form\NewTricksForm;
 use App\Repository\TrickRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +28,11 @@ final class TrickController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(NewTricksForm::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setUser($this->getUser());
             $slug = $slugger->slug($trick->getName())->lower();
             $trick->setSlug($slug);
 

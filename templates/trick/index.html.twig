@@ -1,24 +1,35 @@
 {% extends "layouts/base.html.twig" %}
 
 {% block title %}Liste des tricks{% endblock %}
+
 {% block head %}
-    <style>
-        /* Styles CSS pour la liste des articles */
-    </style>
+    <link rel="stylesheet" href="{{ asset('Css/Computer/IndexTrickStyle.css') }}">
 {% endblock %}
 
 {% block content %}
-  <section class="trick-index">
-      {% for trick in tricks %}
-      <article>
-          <h2>{{ trick.name }}</h2>
-          <div class="metadata"> Ecrit le {{ trick.createdAt | date ('d/m/Y') }} a {{ trick.createdAt| date ('H:i') }}</div>
-          <div class="content">
-              {{ trick.description }}
-              <a href="{{ path('trick_show', { slug: trick.slug }) }}">
-                  Voir {{ trick.name }}
-              </a>
-          </div>
-      </article>
-      {% endfor %}
+    <section class="trick-index">
+        {% for trick in tricks %}
+            <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="card-link">
+                <article class="card">
+
+                    {# Afficher la première image du trick ou une image par défaut #}
+                    {% set displayed = false %}
+                    {% for media in trick.media %}
+                        {% if media.type == 'image' and not displayed %}
+                            {% set displayed = true %}
+                            <img src="{{ media.url }}" alt="Image de {{ trick.name }}" class="card-image">
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if not displayed %}
+                        <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" class="card-image image-default">
+                    {% endif %}
+
+                    {# Le contenu de la carte #}
+                    <h2 class="trick-name">{{ trick.name }}</h2>
+
+                </article>
+            </a>
+        {% endfor %}
+    </section>
 {% endblock %}
