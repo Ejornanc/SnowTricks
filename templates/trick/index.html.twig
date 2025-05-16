@@ -4,32 +4,56 @@
 
 {% block head %}
     <link rel="stylesheet" href="{{ asset('Css/Computer/IndexTrickStyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('Css/Computer/CardStyle.css') }}">
 {% endblock %}
 
 {% block content %}
     <section class="trick-index">
         {% for trick in tricks %}
-            <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="card-link">
-                <article class="card">
-
-                    {# Afficher la première image du trick ou une image par défaut #}
-                    {% set displayed = false %}
-                    {% for media in trick.media %}
-                        {% if media.type == 'image' and not displayed %}
-                            {% set displayed = true %}
-                            <img src="{{ media.url }}" alt="Image de {{ trick.name }}" class="card-image">
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if not displayed %}
-                        <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" class="card-image image-default">
+            <article class="card" data-href="{{ path('trick_show', { slug: trick.slug }) }}">
+                <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="card-link">
+                {# Image Trick #}
+                {% set displayed = false %}
+                {% for media in trick.media %}
+                    {% if media.type == 'image' and not displayed %}
+                        {% set displayed = true %}
+                        <img src="{{ media.url }}" alt="Image de {{ trick.name }}" class="card-image">
                     {% endif %}
+                {% endfor %}
+                {% if not displayed %}
+                    <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" class="card-image-default">
+                {% endif %}
 
-                    {# Le contenu de la carte #}
-                    <h2 class="trick-name">{{ trick.name }}</h2>
-
-                </article>
-            </a>
+                {# Titre Trick #}
+                <h2 class="card-trick-name">{{ trick.name }}</h2>
+                </a>
+                {# Actions (Modifier, Supprimer) #}
+                {% if app.user %}
+                    <div class="card-actions">
+                        <a href="{{ path('unused', { slug: trick.slug }) }}" class="card-action-button" title="Modifier">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                            </svg>
+                        </a>
+                        <a href="{{ path('unused', { slug: trick.slug }) }}" class="card-action-button" title="Supprimer" return confirm('Voulez-vous vraiment supprimer ce trick ?');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+                                <path d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                {% endif %}
+            </article>
         {% endfor %}
+
+        <p>
+            nombre de tricks : {{ tricks|length }}
+        </p>
+
     </section>
+    <a href="#" class="scroll-to-top" id="scrollTopBtn" title="Remonter en haut">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+             fill="none" stroke="black" stroke-width="3" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+        </svg>
+    </a>
 {% endblock %}

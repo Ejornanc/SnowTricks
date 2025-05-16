@@ -6,7 +6,7 @@ use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
-class Media
+class Media implements MediaInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
