@@ -1,0 +1,78 @@
+.trick-container {
+    max-width: 900px;
+    margin: 40px auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    background-color: white;
+}
+
+.trick-banner {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    color: white;
+    background-blend-mode: darken;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.trick-banner h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+}
+
+.media-gallery {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.media-gallery img,
+.media-gallery iframe {
+    flex: 0 0 auto;
+    max-height: 200px;
+    border-radius: 8px;
+}
+
+.trick-info {
+    padding: 20px;
+}
+
+.trick-info .metadata {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.trick-info .content {
+    line-height: 1.6;
+}
+
+
+.media-gallery {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    scroll-snap-type: x mandatory;
+}
+
+.media-item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+
+.media-item img,
+.media-item iframe {
+    max-height: 200px;
+    border-radius: 8px;
+    display: block;
+}

@@ -9,52 +9,52 @@
 {% endblock %}
 
 {% block content %}
-    <h2>{{ trick.name }}</h2>
-    <h2>Images</h2>
-    <ul>
-        {% set hasImage = false %}
+
+    <div class="trick-container">
+        {% set bannerImage = null %}
         {% for media in trick.media %}
-            {% if media.type == 'image' %}
-                {% set hasImage = true %}
-                <li>
-                    <img src="{{ media.url }}" alt="Image du trick" style="max-width: 300px;">
-                </li>
+            {% if media.type == 'image' and bannerImage is null %}
+                {% set bannerImage = media.url %}
             {% endif %}
         {% endfor %}
 
-        {% if not hasImage %}
-            <li>
-                <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" style="max-width: 300px;">
-            </li>
+        {% if bannerImage is null %}
+            {% set bannerImage = asset('Images/no_image_available.png') %}
         {% endif %}
-    </ul>
+        <div class="trick-banner" style="background-image: url('{{ bannerImage }}')">
+            <h1>{{ trick.name }}</h1>
+        </div>
 
-    <h2>Vidéos</h2>
-    <ul>
-        {% set hasVideo = false %}
-        {% for media in trick.media %}
-            {% if media.type == 'video' %}
-                {% set hasVideo = true %}
-                <li>
-                    <iframe width="560" height="315" src="{{ media.url }}" frameborder="0" allowfullscreen></iframe>
-                </li>
+        <div class="media-gallery">
+            {% set hasMedia = false %}
+            {% for media in trick.media %}
+                {% if media.type == 'image' %}
+                    {% set hasMedia = true %}
+                    <div class="media-item">
+                        <img src="{{ media.url }}" alt="Image du trick">
+                    </div>
+                {% elseif media.type == 'video' %}
+                    {% set hasMedia = true %}
+                    <div class="media-item">
+                        <iframe src="{{ media.url }}" allowfullscreen></iframe>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <iframe width="560" height="315" src="https://www.dailymotion.com/video/x8qu25k" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            {% if not hasMedia %}
+                <div class="media-item">
+                    <img src="{{ asset('Images/no_media_available.png') }}" alt="Aucun média disponible">
+                </div>
             {% endif %}
-        {% endfor %}
+        </div>
 
-        {% if not hasVideo %}
-            <li>
-                <img src="{{ asset('Images/no_video_available.png') }}" alt="Aucune vidéo disponible" style="max-width: 300px;">
-            </li>
-        {% endif %}
-    </ul>
-
-<section class="articles">
-        <article>
-            <h2>{{ trick.name }}</h2>
-            <div class="metadata"> Ecrit le {{ trick.CreatedAt | date ('d/m/Y') }} a {{ trick.CreatedAt| date ('H:i') }} modifier le {{ trick.UpdatedAt | date ('d/m/Y') }} a {{ trick.UpdatedAt| date ('H:i') }}</div>
-            <div class="content">
-                {{ trick.Description | raw }}
-            </div>
-        </article>
-</section>
+        <section class="articles">
+                <article>
+                    <div class="metadata"> Ecrit le {{ trick.CreatedAt | date ('d/m/Y') }} a {{ trick.CreatedAt| date ('H:i') }} modifier le {{ trick.UpdatedAt | date ('d/m/Y') }} a {{ trick.UpdatedAt| date ('H:i') }}</div>
+                    <div class="content">
+                        {{ trick.Description | raw }}
+                    </div>
+                </article>
+        </section>
+    </div>
     {% endblock %}
