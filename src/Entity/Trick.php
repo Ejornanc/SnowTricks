@@ -18,10 +18,10 @@ class Trick
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255,  unique: true)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255,  unique: true)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -50,15 +50,22 @@ class Trick
     private Collection $comments;
 
     /**
-     * @var Collection<int, Media>
+     * @var Collection<int, Image>
      */
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'trick', orphanRemoval: true)]
-    private Collection $media;
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $images;
+
+    /**
+     * @var Collection<int, Video>
+     */
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $videos;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->media = new ArrayCollection();
+        $this->images = new ArrayCollection();
+        $this->videos = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -76,7 +83,6 @@ class Trick
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -88,7 +94,6 @@ class Trick
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
-
         return $this;
     }
 
@@ -100,7 +105,6 @@ class Trick
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -112,7 +116,17 @@ class Trick
     public function setDifficulty(Difficulty $difficulty): static
     {
         $this->difficulty = $difficulty;
+        return $this;
+    }
 
+    public function getTrickType(): ?TrickType
+    {
+        return $this->tricktype;
+    }
+
+    public function setTrickType(TrickType $tricktype): static
+    {
+        $this->tricktype = $tricktype;
         return $this;
     }
 
@@ -124,7 +138,6 @@ class Trick
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -136,7 +149,6 @@ class Trick
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
-
         return $this;
     }
 
@@ -148,9 +160,9 @@ class Trick
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
+
     /**
      * @return Collection<int, Comment>
      */
@@ -172,7 +184,6 @@ class Trick
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getTrick() === $this) {
                 $comment->setTrick(null);
             }
@@ -182,47 +193,60 @@ class Trick
     }
 
     /**
-     * @return Collection<int, Media>
+     * @return Collection<int, Image>
      */
-    public function getMedia(): Collection
+    public function getImages(): Collection
     {
-        return $this->media;
+        return $this->images;
     }
 
-    public function addMedium(Media $medium): static
+    public function addImage(Image $image): static
     {
-        if (!$this->media->contains($medium)) {
-            $this->media->add($medium);
-            $medium->setTrick($this);
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setTrick($this);
         }
 
         return $this;
     }
 
-    public function removeMedium(Media $medium): static
+    public function removeImage(Image $image): static
     {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getTrick() === $this) {
-                $medium->setTrick(null);
+        if ($this->images->removeElement($image)) {
+            if ($image->getTrick() === $this) {
+                $image->setTrick(null);
             }
         }
 
         return $this;
     }
 
-    public function getTrickType(): ?TrickType
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
     {
-        return $this->tricktype;
+        return $this->videos;
     }
 
-    public function setTrickType(TrickType $tricktype): static
+    public function addVideo(Video $video): static
     {
-        $this->tricktype = $tricktype;
+        if (!$this->videos->contains($video)) {
+            $this->videos->add($video);
+            $video->setTrick($this);
+        }
+
         return $this;
     }
 
-    public function findAll()
+    public function removeVideo(Video $video): static
     {
+        if ($this->videos->removeElement($video)) {
+            if ($video->getTrick() === $this) {
+                $video->setTrick(null);
+            }
+        }
+
+        return $this;
     }
 }

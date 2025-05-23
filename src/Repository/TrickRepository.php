@@ -46,10 +46,12 @@ class TrickRepository extends ServiceEntityRepository
     public function findAllWithMedia(): array
     {
         return $this->createQueryBuilder('t')
-            ->leftJoin('t.media','m')
-            ->addSelect('m')
+            ->leftJoin('t.images', 'i')
+            ->leftJoin('t.videos', 'v')
+            ->addSelect('i')
+            ->addSelect('v')
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
 }
