@@ -1,6 +1,4 @@
 {% extends "layouts/base.html.twig" %}
-
-{% block title %}Nouveau trick{% endblock %}
 {% block head %}
     {{ parent() }}
     <style>
@@ -8,23 +6,38 @@
     </style>
 {% endblock %}
 
-{% block content %}
-<div class="form-page">
+{% block title %}Nouveau trick{% endblock %}
 
-    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-    <h1 class="form-title">Créer un nouveau trick</h1>
-    <form method="post" class="form-form">
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit">Créer</button>
-        {{ form_end(form) }}
-    </form>
-    {% else %}
-        <h2>Vous devez être connecté pour créer un trick</h2>
-        <p>
-            <a href="{{ path('app_login') }}">Se connecter</a> ou
-            <a href="{{ path('app_register') }}">Créer un compte</a>
-        </p>
-    {% endif %}
-</div>
+{% block content %}
+    <div class="form-page">
+
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+
+            <h1 class="form-title">Créer un nouveau trick</h1>
+                <div class="form-form">
+
+            {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
+
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.Trick_Type) }}
+            {{ form_row(form.difficulty) }}
+
+            <h3>Images</h3>
+            {% for imageForm in form.images %}
+                {{ form_row(imageForm.imageFile) }}
+            {% endfor %}
+
+            <button type="submit">Créer</button>
+
+            {{ form_end(form) }}
+
+        {% else %}
+            <h2>Vous devez être connecté pour créer un trick</h2>
+            <p>
+                <a href="{{ path('app_login') }}">Se connecter</a> ou
+                <a href="{{ path('app_register') }}">Créer un compte</a>
+            </p>
+        {% endif %}
+    </div>
 {% endblock %}

@@ -6,12 +6,14 @@ use App\Enum\Difficulty;
 use App\Enum\TrickType;
 use App\Entity\Trick;
 use App\Entity\User;
+use App\Form\TrickImageType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class NewTricksForm extends AbstractType
 {
@@ -36,6 +38,13 @@ class NewTricksForm extends AbstractType
                 'placeholder' => 'Choose a difficulty',
                 'row_attr' => ['class' => 'new-trick-form-difficulty'],
             ])
+            ->add('images', CollectionType::class, [
+                'entry_type' => TrickImageType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+            ]);
         ;
     }
 

@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\ORM\Mapping as ORM;
 
+#[Vich\Uploadable]
 #[ORM\Entity]
 class Image implements MediaInterface
 {
@@ -17,6 +20,12 @@ class Image implements MediaInterface
 
     #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[Vich\UploadableField(mapping: 'trick_images', fileNameProperty: 'url')]
+    private ?File $imageFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -34,9 +43,6 @@ class Image implements MediaInterface
 
     public function getUrl(): ?string
     {
-        if (!$this->url) {
-            dd ($this);
-        }
         return $this->url;
     }
 
@@ -57,6 +63,17 @@ class Image implements MediaInterface
         return $this;
     }
 
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
     public function getTrick(): ?Trick
     {
         return $this->trick;
@@ -66,5 +83,19 @@ class Image implements MediaInterface
     {
         $this->trick = $trick;
         return $this;
+    }
+
+    public function setImageFile(?File $file = null): void
+    {
+        $this->imageFile = $file;
+
+        if ($file !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
     }
 }

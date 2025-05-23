@@ -16,7 +16,7 @@
                     {% set displayed = false %}
                     {% for image in trick.images %}
                         {% if not displayed %}
-                            <img src="{{ asset(image.url) }}" alt="Image de {{ trick.name }}" class="card-image">
+                            <img src="{{ asset('uploads/tricks/images/' ~ image.url) }}" alt="Image de {{ trick.name }}" class="card-image">
                             {% set displayed = true %}
                         {% endif %}
                     {% endfor %}

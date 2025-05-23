@@ -36,7 +36,7 @@ class Trick
     #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(nullable: false)]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]

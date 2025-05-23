@@ -16,7 +16,7 @@
         {% set bannerImage = null %}
         {% for image in trick.images %}
             {% if loop.first %}
-                {% set bannerImage = asset(image.url) %}
+                {% set bannerImage = asset('uploads/tricks/images/' ~ image.url) %}
             {% endif %}
         {% endfor %}
 
@@ -37,7 +37,7 @@
             {% if hasImages %}
                 {% for image in trick.images %}
                     <div class="media-item">
-                        <img src="{{ asset(image.url) }}" alt="Image du trick">
+                        <img src="{{ asset('uploads/tricks/images/' ~ image.url) }}" alt="Image du trick">
                     </div>
                 {% endfor %}
             {% else %}
@@ -64,8 +64,12 @@
         <section class="articles">
             <article>
                 <div class="metadata">
-                    Écrit le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }},
-                    modifié le {{ trick.updatedAt|date('d/m/Y') }} à {{ trick.updatedAt|date('H:i') }}
+                    Écrit le {{ trick.createdAt ? trick.createdAt|date('d/m/Y') ~ ' à ' ~ trick.createdAt|date('H:i') : 'date inconnue' }},
+                    {% if trick.updatedAt %}
+                        modifié le {{ trick.updatedAt|date('d/m/Y') }} à {{ trick.updatedAt|date('H:i') }}
+                    {% else %}
+                        jamais modifié
+                    {% endif %}
                 </div>
                 <div class="content">
                     {{ trick.description|raw }}
