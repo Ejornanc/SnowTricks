@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
+use App\Entity\Image;
 use App\Form\NewTricksForm;
 use App\Repository\TrickRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,8 +29,30 @@ final class TrickController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
+
+        // Toujours au moins un champ image visible
+        if ($trick->getImages()->isEmpty()) {
+            $trick->addImage(new Image());
+        }
+
         $form = $this->createForm(NewTricksForm::class, $trick);
         $form->handleRequest($request);
+
+        // Si soumis mais pas valide (ex. champ vide), on ajoute un champ vide SI le dernier est rempli
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $images = $trick->getImages();
+
+            if (!$images->isEmpty()) {
+                $lastImage = $images->last();
+                if ($lastImage?->getImageFile()) {
+                    $trick->addImage(new Image());
+
+                    // Re-création du formulaire avec la nouvelle image ajoutée
+                    $form = $this->createForm(NewTricksForm::class, $trick);
+                    $form->handleRequest($request);
+                }
+            }
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setUser($this->getUser());
@@ -60,6 +83,5 @@ final class TrickController extends AbstractController
             'trick' => $trick,
         ]);
     }
-
 
 }
