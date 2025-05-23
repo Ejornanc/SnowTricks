@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MediaRepository::class)]
-class Media implements MediaInterface
+#[ORM\Entity]
+class Image implements MediaInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,44 +13,36 @@ class Media implements MediaInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $type = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
     #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'media')]
+    #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Trick $trick = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getUrl(): ?string
     {
+        if (!$this->url) {
+            dd ($this);
+        }
         return $this->url;
     }
 
     public function setUrl(?string $url): static
     {
         $this->url = $url;
-
         return $this;
     }
 
@@ -63,7 +54,6 @@ class Media implements MediaInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -75,12 +65,6 @@ class Media implements MediaInterface
     public function setTrick(?Trick $trick): static
     {
         $this->trick = $trick;
-
         return $this;
-    }
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
     }
 }

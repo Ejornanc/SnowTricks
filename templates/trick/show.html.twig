@@ -1,6 +1,7 @@
 {% extends "layouts/base.html.twig" %}
 
-{% block title %}{{ trick.name  }}{% endblock %}
+{% block title %}{{ trick.name }}{% endblock %}
+
 {% block head %}
     {{ parent() }}
     <style>
@@ -9,52 +10,68 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="trick-container">
+
+        {# === Trouver une image pour la bannière === #}
         {% set bannerImage = null %}
-        {% for media in trick.media %}
-            {% if media.type == 'image' and bannerImage is null %}
-                {% set bannerImage = media.url %}
+        {% for image in trick.images %}
+            {% if loop.first %}
+                {% set bannerImage = asset(image.url) %}
             {% endif %}
         {% endfor %}
 
         {% if bannerImage is null %}
             {% set bannerImage = asset('Images/no_image_available.png') %}
         {% endif %}
+
         <div class="trick-banner" style="background-image: url('{{ bannerImage }}')">
             <h1>{{ trick.name }}</h1>
         </div>
 
+        {# === Galerie images + vidéos === #}
         <div class="media-gallery">
-            {% set hasMedia = false %}
-            {% for media in trick.media %}
-                {% if media.type == 'image' %}
-                    {% set hasMedia = true %}
+            {% set hasImages = trick.images|length > 0 %}
+            {% set hasVideos = trick.videos|length > 0 %}
+
+            {# === Affichage des images === #}
+            {% if hasImages %}
+                {% for image in trick.images %}
                     <div class="media-item">
-                        <img src="{{ media.url }}" alt="Image du trick">
+                        <img src="{{ asset(image.url) }}" alt="Image du trick">
                     </div>
-                {% elseif media.type == 'video' %}
-                    {% set hasMedia = true %}
-                    <div class="media-item">
-                        <iframe src="{{ media.url }}" allowfullscreen></iframe>
-                    </div>
-                {% endif %}
-            {% endfor %}
-            <iframe width="560" height="315" src="https://www.dailymotion.com/video/x8qu25k" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            {% if not hasMedia %}
+                {% endfor %}
+            {% else %}
                 <div class="media-item">
-                    <img src="{{ asset('Images/no_media_available.png') }}" alt="Aucun média disponible">
+                    <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible">
+                </div>
+            {% endif %}
+
+            {# === Affichage des vidéos === #}
+            {% if hasVideos %}
+                {% for video in trick.videos %}
+                    <div class="media-item">
+                        <iframe src="{{ video.url }}" allowfullscreen></iframe>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="media-item">
+                    <img src="{{ asset('Images/no_video_available.png') }}" alt="Aucune vidéo disponible">
                 </div>
             {% endif %}
         </div>
 
+        {# === Description du trick === #}
         <section class="articles">
-                <article>
-                    <div class="metadata"> Ecrit le {{ trick.CreatedAt | date ('d/m/Y') }} a {{ trick.CreatedAt| date ('H:i') }} modifier le {{ trick.UpdatedAt | date ('d/m/Y') }} a {{ trick.UpdatedAt| date ('H:i') }}</div>
-                    <div class="content">
-                        {{ trick.Description | raw }}
-                    </div>
-                </article>
+            <article>
+                <div class="metadata">
+                    Écrit le {{ trick.createdAt|date('d/m/Y') }} à {{ trick.createdAt|date('H:i') }},
+                    modifié le {{ trick.updatedAt|date('d/m/Y') }} à {{ trick.updatedAt|date('H:i') }}
+                </div>
+                <div class="content">
+                    {{ trick.description|raw }}
+                </div>
+            </article>
         </section>
+
     </div>
-    {% endblock %}
+{% endblock %}

@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PrePersist]
     public function generateRandomKey() : void
     {
-        dd(__METHOD__);
+
     }
 
     public function __construct()

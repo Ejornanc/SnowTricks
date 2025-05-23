@@ -5,7 +5,8 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\Trick;
 use App\Entity\Comment;
-use App\Entity\Media;
+use App\Entity\Image;
+use App\Entity\Video;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -69,14 +70,22 @@ class AppFixtures extends Fixture
             $manager->persist($comment);
         }
 
-        for ($i = 0; $i < 30; $i++) {
-            $media = new Media();
-            $media->setType($faker->randomElement(['image', 'video']))
-                ->setUrl($faker->imageUrl())
+        for ($i = 0; $i < 10; $i++) {
+            $video = new Video();
+            $video->setUrl('https://www.youtube.com/embed/dQw4w9WgXcQ') // tu peux varier si tu veux
+            ->setCreatedAt(new \DateTimeImmutable())
+                ->setTrick($faker->randomElement($tricks));
+
+            $manager->persist($video);
+        }
+
+        for ($i = 0; $i < 20; $i++) {
+            $image = new Image();
+            $image->setUrl($faker->imageUrl(640, 480, 'sports'))
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setTrick($faker->randomElement($tricks));
 
-            $manager->persist($media);
+            $manager->persist($image);
         }
 
         $manager->flush();
