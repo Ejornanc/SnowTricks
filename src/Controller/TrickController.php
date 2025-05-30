@@ -32,28 +32,20 @@ final class TrickController extends AbstractController
     {
         $trick = new Trick();
 
-        if ($trick->getVideos()->isEmpty()) {
-            $trick->addVideo(new \App\Entity\Video());
-        }
-
-        // Toujours au moins un champ image visible
-        if ($trick->getImages()->isEmpty()) {
-            $trick->addImage(new Image());
-        }
+        // Affiche un champ image et un champ vidéo vides dans le formulaire
+        $trick->addImage(new Image());
+        $trick->addVideo(new \App\Entity\Video());
 
         $form = $this->createForm(NewTricksForm::class, $trick);
         $form->handleRequest($request);
 
-        // Si soumis mais pas valide (ex. champ vide), on ajoute un champ vide SI le dernier est rempli
+        // Ajoute dynamiquement une image si le dernier champ a été rempli
         if ($form->isSubmitted() && !$form->isValid()) {
             $images = $trick->getImages();
-
             if (!$images->isEmpty()) {
                 $lastImage = $images->last();
                 if ($lastImage?->getImageFile()) {
                     $trick->addImage(new Image());
-
-                    // Re-création du formulaire avec la nouvelle image ajoutée
                     $form = $this->createForm(NewTricksForm::class, $trick);
                     $form->handleRequest($request);
                 }
@@ -61,6 +53,13 @@ final class TrickController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // ✅ Supprimer les images sans fichier
+            foreach ($trick->getImages() as $image) {
+                if ($image->getImageFile() === null) {
+                    $trick->removeImage($image);
+                }
+            }
+
             $trick->setUser($this->getUser());
             $slug = $slugger->slug($trick->getName())->lower();
             $trick->setSlug($slug);
@@ -110,6 +109,25 @@ final class TrickController extends AbstractController
             'trick' => $trick,
             'commentForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/trick/{slug}/delete', name: 'trick_delete', methods: ['POST'])]
+    public function delete(string $slug, EntityManagerInterface $em, Request $request): Response
+    {
+        $trick = $em->getRepository(Trick::class)->findOneBy(['slug' => $slug]);
+
+        if (!$trick) {
+            throw $this->createNotFoundException('Trick non trouvé');
+        }
+
+        // Protection CSRF
+        if ($this->isCsrfTokenValid('delete_trick_' . $trick->getId(), $request->request->get('_token'))) {
+            $em->remove($trick);
+            $em->flush();
+            $this->addFlash('success', 'Trick supprimé avec succès.');
+        }
+
+        return $this->redirectToRoute('home');
     }
 
 }

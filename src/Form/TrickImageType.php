@@ -15,7 +15,7 @@ class TrickImageType extends AbstractType
         $builder
             ->add('imageFile', FileType::class, [
                 'label' => 'Image',
-                'required' => true,
+                'required' => false,
             ]);
     }
 
