@@ -23,10 +23,10 @@
             {{ form_row(form.Trick_Type) }}
             {{ form_row(form.difficulty) }}
 
-            <h3>Images</h3>
             {% for imageForm in form.images %}
                 {{ form_row(imageForm.imageFile) }}
             {% endfor %}
+            </div>
 
             <button type="submit">Créer</button>
 

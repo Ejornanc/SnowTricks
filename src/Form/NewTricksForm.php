@@ -45,7 +45,6 @@ class NewTricksForm extends AbstractType
                 'by_reference' => false,
                 'label' => false,
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
