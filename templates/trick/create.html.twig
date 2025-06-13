@@ -6,6 +6,7 @@
     </style>
 {% endblock %}
 
+
 {% block title %}Nouveau trick{% endblock %}
 
 {% block content %}
@@ -17,19 +18,29 @@
                 <div class="form-form">
 
             {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
-
+                    <h2>Name</h2>
             {{ form_row(form.name) }}
+                    <h2>Description</h2>
             {{ form_row(form.description) }}
+                    <h2>Trick Type</h2>
             {{ form_row(form.Trick_Type) }}
+                    <h2>Difficulty</h2>
             {{ form_row(form.difficulty) }}
+                    <h2>Images</h2>
+                    <div id="images-collection"
+                         data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+                        {% for imageForm in form.images %}
+                            <div class="image-form">
+                                {{ form_row(imageForm) }}
+                            </div>
+                        {% endfor %}
+                    </div>
 
-            {% for imageForm in form.images %}
-                {{ form_row(imageForm.imageFile) }}
-            {% endfor %}
-            </div>
+                    <button type="button" id="add-image-btn">Ajouter une image</button>
+
 
             <button type="submit">Créer</button>
-
+    </div>
             {{ form_end(form) }}
 
         {% else %}
@@ -40,4 +51,5 @@
             </p>
         {% endif %}
     </div>
+    <script src="{{ asset('js/trick-form.js') }}"></script>
 {% endblock %}

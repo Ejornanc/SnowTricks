@@ -40,10 +40,11 @@ class NewTricksForm extends AbstractType
             ])
             ->add('images', CollectionType::class, [
                 'entry_type' => TrickImageType::class,
+                'entry_options' => ['label' => false],
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-                'label' => 'Images',
+                'prototype' => true,
             ]);
     }
 

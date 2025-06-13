@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class TrickController extends AbstractController
@@ -20,26 +21,30 @@ final class TrickController extends AbstractController
     #[Route('/trick', name: 'trick')]
     public function home(TrickRepository $trickRepository): Response
     {
+
+        $test='<iframe width="560" height="315" src="https://www.youtube.com/embed/H3G5kycAw6Q?si=YzLH7Zg95umhd2n5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+        preg_match('/src="([^"]+)"/', $test, $matches);
+
+        $src = $matches[1] ?? null;
+
+        dd($test,$src);
+
         $tricks = $trickRepository->findAllWithMedia();
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks
         ] );
     }
 
-
     #[Route('/trick/new', name: 'trick_new')]
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
-
-        // Affiche un champ image et un champ vidéo vides dans le formulaire
         $trick->addImage(new Image());
         $trick->addVideo(new \App\Entity\Video());
 
         $form = $this->createForm(NewTricksForm::class, $trick);
         $form->handleRequest($request);
 
-        // Ajoute dynamiquement une image si le dernier champ a été rempli
         if ($form->isSubmitted() && !$form->isValid()) {
             $images = $trick->getImages();
             if (!$images->isEmpty()) {
@@ -53,10 +58,12 @@ final class TrickController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // ✅ Supprimer les images sans fichier
+            // Supprimer les images vides
             foreach ($trick->getImages() as $image) {
                 if ($image->getImageFile() === null) {
                     $trick->removeImage($image);
+                } else {
+                    $image->setTrick($trick); // utile si le setTrick n’est pas automatique
                 }
             }
 
