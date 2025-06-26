@@ -2,19 +2,23 @@
 
 namespace App\Form;
 
+use App\Entity\Video;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Entity\Image;
 
-class TrickImageType extends AbstractType
+class VideoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('imageFile', FileType::class, [
+            ->add('url', TextareaType::class, [
                 'label' => false,
+                'attr' => [
+                    'placeholder' => '<iframe src="..."></iframe>',
+                    'rows' => 3,
+                ],
                 'required' => false,
             ]);
     }
@@ -22,7 +26,7 @@ class TrickImageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Image::class,
+            'data_class' => Video::class,
         ]);
     }
 }

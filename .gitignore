@@ -32,3 +32,4 @@ BDD
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+/public/uploads/tricks/images/

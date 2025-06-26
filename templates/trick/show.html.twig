@@ -76,6 +76,10 @@
                 </div>
             </article>
         </section>
+        <form method="post" action="{{ path('trick_delete', {slug: trick.slug}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce trick ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_trick_' ~ trick.id) }}">
+            <button type="submit">Supprimer</button>
+        </form>
 
     </div>
 {% endblock %}

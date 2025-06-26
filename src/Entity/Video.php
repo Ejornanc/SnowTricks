@@ -1,9 +1,13 @@
 <?php
 namespace App\Entity;
+use App\Validator\VideoUrlValidator;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\VideoUrl;
 
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Video implements MediaInterface
 {
     #[ORM\Id]
@@ -11,7 +15,9 @@ class Video implements MediaInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank]
+    #[VideoUrl]
     private ?string $url = null;
 
     #[ORM\Column(nullable: false)]
@@ -21,15 +27,6 @@ class Video implements MediaInterface
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Trick $trick = null;
 
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getUrl(): ?string
     {
@@ -40,6 +37,16 @@ class Video implements MediaInterface
     {
         $this->url = $url;
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -63,4 +70,18 @@ class Video implements MediaInterface
         $this->trick = $trick;
         return $this;
     }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function formatUrl(): void
+    {
+        if (preg_match(VideoUrlValidator::SRC_REGEX, $this->url, $matches)) {
+            $this->url = $matches[1];
+        } else {
+
+            $this->url = null;
+        }
+    }
+
+
 }

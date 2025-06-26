@@ -6,6 +6,7 @@
     </style>
 {% endblock %}
 
+
 {% block title %}Nouveau trick{% endblock %}
 
 {% block content %}
@@ -13,23 +14,46 @@
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 
-            <h1 class="form-title">Créer un nouveau trick</h1>
                 <div class="form-form">
+                    <h1 class="form-title">Créer un nouveau trick</h1>
 
             {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
-
+                    <h3>Name</h3>
             {{ form_row(form.name) }}
+                    <h3>Description</h3>
             {{ form_row(form.description) }}
+                    <h3>Trick Type</h3>
             {{ form_row(form.Trick_Type) }}
+                    <h3>Difficulty</h3>
             {{ form_row(form.difficulty) }}
+                    <h3>Images</h3>
+                    <div id="images-collection"
+                         data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+                        {% for imageForm in form.images %}
+                            <div class="image-form">
+                                {{ form_row(imageForm) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add-image-btn">Ajouter une image</button>
+                    <h3>Vidéos</h3>
+                    <div id="videos-collection"
+                         data-prototype="{{ form_widget(form.videos.vars.prototype)|e('html_attr') }}">
+                        {% for videoForm in form.videos %}
+                            <div class="video-form">
+                                {{ form_label(videoForm.url) }}
+                                {{ form_widget(videoForm.url) }}
+                                {{ form_errors(videoForm.url) }}
+                            </div>
+                        {% endfor %}
+                    </div>
 
-            <h3>Images</h3>
-            {% for imageForm in form.images %}
-                {{ form_row(imageForm.imageFile) }}
-            {% endfor %}
+                    <button type="button" id="add-video-btn">Ajouter une vidéo</button>
 
-            <button type="submit">Créer</button>
 
+
+                    <button type="submit">Créer</button>
+    </div>
             {{ form_end(form) }}
 
         {% else %}
@@ -40,4 +64,5 @@
             </p>
         {% endif %}
     </div>
+    <script src="{{ asset('js/trick-form.js') }}"></script>
 {% endblock %}

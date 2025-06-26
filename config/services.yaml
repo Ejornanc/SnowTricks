@@ -1,7 +1,11 @@
-parameters: {}
+parameters: {
+    trick_images_directory: '%kernel.project_dir%/public/uploads/tricks/images'
+}
 
 services:
-
+    App\EventListener\VideoSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }
 
     _defaults:
         autowire: true
@@ -13,3 +17,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Validator\:
+        resource: '../src/Validator'
+        tags: ['validator.constraint_validator']
+        public: true
