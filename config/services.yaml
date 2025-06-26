@@ -3,7 +3,9 @@ parameters: {
 }
 
 services:
-
+    App\EventListener\VideoSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }
 
     _defaults:
         autowire: true
@@ -15,3 +17,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Validator\:
+        resource: '../src/Validator'
+        tags: ['validator.constraint_validator']
+        public: true

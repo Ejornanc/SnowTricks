@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Trick;
 use App\Entity\Image;
 use App\Entity\Comment;
+use App\Entity\Video;
 use App\Form\NewTricksForm;
 use App\Form\CommentType;
 use App\Repository\TrickRepository;
@@ -15,20 +16,13 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class TrickController extends AbstractController
 {
     #[Route('/trick', name: 'trick')]
     public function home(TrickRepository $trickRepository): Response
     {
-
-        $test='<iframe width="560" height="315" src="https://www.youtube.com/embed/H3G5kycAw6Q?si=YzLH7Zg95umhd2n5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-        preg_match('/src="([^"]+)"/', $test, $matches);
-
-        $src = $matches[1] ?? null;
-
-        dd($test,$src);
-
         $tricks = $trickRepository->findAllWithMedia();
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks
@@ -39,8 +33,6 @@ final class TrickController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
-        $trick->addImage(new Image());
-        $trick->addVideo(new \App\Entity\Video());
 
         $form = $this->createForm(NewTricksForm::class, $trick);
         $form->handleRequest($request);
@@ -68,7 +60,8 @@ final class TrickController extends AbstractController
             }
 
             $trick->setUser($this->getUser());
-            $slug = $slugger->slug($trick->getName())->lower();
+            $cleanName = strip_tags($trick->getName());
+            $slug = $slugger->slug($cleanName)->lower();
             $trick->setSlug($slug);
 
             $em->persist($trick);

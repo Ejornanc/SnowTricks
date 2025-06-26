@@ -13,3 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
         index++;
     });
 });
+document.addEventListener('DOMContentLoaded', () => {
+    const videoCollection = document.getElementById('videos-collection');
+    const addVideoBtn = document.getElementById('add-video-btn');
+
+    if (videoCollection && addVideoBtn) {
+        let index = videoCollection.querySelectorAll('.video-form').length;
+
+        addVideoBtn.addEventListener('click', function () {
+            const prototype = videoCollection.dataset.prototype;
+            const newFormHtml = prototype.replace(/__name__/g, index);
+            const newForm = document.createElement('div');
+            newForm.classList.add('video-form');
+            newForm.innerHTML = newFormHtml;
+            videoCollection.appendChild(newForm);
+            index++;
+        });
+    }
+});
