@@ -1,0 +1,64 @@
+.profile-block {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centre tout le contenu horizontalement */
+}
+
+.profile-picture img {
+    display: block;
+    margin: 0 auto 20px auto;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px; /* largeur maximale du formulaire */
+    width: 100%; /* prend toute la largeur dispo jusqu'à max-width */
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 -4px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.user-form label {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.user-form input {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.user-form button {
+    margin-top: 20px;
+    margin-bottom: 40px; /* espace sous le bouton */
+    width: 60%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.user-form button:hover {
+    background-color: #0056b3;
+}
+
+h1 {
+    text-align: center;
+}
