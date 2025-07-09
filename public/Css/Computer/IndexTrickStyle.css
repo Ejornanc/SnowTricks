@@ -9,13 +9,8 @@
     bottom: 30px;
     right: 30px;
     font-size: 24px;
-    /* background-color: rgba(103, 103, 103, 0);
-     color: #fff;
-     padding: 10px 14px;
-     border-radius: 50%;*/
     text-align: center;
     text-decoration: none;
-    /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);*/
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -25,4 +20,24 @@
 .scroll-to-top.show {
     opacity: 1;
     pointer-events: auto;
+}
+.scroll-top-fixed {
+    position: fixed;
+}
+
+.scroll-top-fixed:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+}
+
+.scroll-top-fixed svg {
+    width: 32px;
+    height: 32px;
+}
+
+@media (max-width: 768px) {
+    .scroll-top-fixed {
+        bottom: 10%;
+    }
+
 }
