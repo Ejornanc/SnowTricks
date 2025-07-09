@@ -1,0 +1,186 @@
+@startuml
+' Interfaces
+interface MediaInterface {
+  +getId() : int
+  +getUrl() : string
+  +setUrl(url : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+}
+
+interface UserInterface {
+  +getUserIdentifier() : string
+  +getRoles() : array
+  +eraseCredentials() : void
+}
+
+interface PasswordAuthenticatedUserInterface {
+  +getPassword() : string
+}
+
+' Enums
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum TrickType {
+  GRABS
+  SPINS
+  FLIPS
+  SLIDES_GRINDS
+  BUTTER_TRICKS
+  ONE_FOOT_TRICKS
+  FREESTYLE_AERIAL_TRICKS
+}
+
+' Classes
+class User implements UserInterface, PasswordAuthenticatedUserInterface {
+  +id : int
+  +username : string
+  +email : string
+  +password : string
+  +createdAt : DateTimeImmutable
+  +isVerified : bool
+  +verificationToken : string
+  +image : string
+  +getId() : int
+  +getUsername() : string
+  +setUsername(username : string) : static
+  +getEmail() : string
+  +setEmail(email : string) : static
+  +getPassword() : string
+  +setPassword(password : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUserIdentifier() : string
+  +getRoles() : array
+  +eraseCredentials() : void
+  +isVerified() : bool
+  +setIsVerified(isVerified : bool) : static
+  +getImage() : string
+  +setImage(image : string) : self
+  +getVerificationToken() : string
+  +setVerificationToken(verificationToken : string) : self
+}
+
+class Trick {
+  +id : int
+  +name : string
+  +slug : string
+  +description : string
+  +difficulty : Difficulty
+  +trickType : TrickType
+  +createdAt : DateTimeImmutable
+  +updatedAt : DateTimeImmutable
+  +user : User
+  +comments : Collection<Comment>
+  +images : Collection<Image>
+  +videos : Collection<Video>
+  +getId() : int
+  +getName() : string
+  +setName(name : string) : static
+  +getSlug() : string
+  +setSlug(slug : string) : static
+  +getDescription() : string
+  +setDescription(description : string) : static
+  +getDifficulty() : Difficulty
+  +setDifficulty(difficulty : Difficulty) : static
+  +getTrickType() : TrickType
+  +setTrickType(trickType : TrickType) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUpdatedAt() : DateTimeImmutable
+  +setUpdatedAt(updatedAt : DateTimeImmutable) : static
+  +getUser() : User
+  +setUser(user : User) : static
+  +getComments() : Collection
+  +addComment(comment : Comment) : static
+  +removeComment(comment : Comment) : static
+  +getImages() : Collection
+  +addImage(image : Image) : static
+  +removeImage(image : Image) : static
+  +getVideos() : Collection
+  +addVideo(video : Video) : static
+  +removeVideo(video : Video) : static
+}
+
+class Comment {
+  +id : int
+  +content : string
+  +createdAt : DateTimeImmutable
+  +user : User
+  +trick : Trick
+  +getId() : int
+  +getContent() : string
+  +setContent(content : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUser() : User
+  +setUser(user : User) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+}
+
+class Image implements MediaInterface {
+  +id : int
+  +url : string
+  +createdAt : DateTimeImmutable
+  +updatedAt : DateTimeImmutable
+  +imageFile : File
+  +trick : Trick
+  +getId() : int
+  +getUrl() : string
+  +setUrl(url : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUpdatedAt() : DateTimeInterface
+  +setUpdatedAt(updatedAt : DateTimeInterface) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+  +getImageFile() : File
+  +setImageFile(file : File) : void
+}
+
+class Video implements MediaInterface {
+  +id : int
+  +url : string
+  +createdAt : DateTimeImmutable
+  +trick : Trick
+  +getId() : int
+  +getUrl() : string
+  +setUrl(url : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+  +formatUrl() : void
+}
+
+' Relationships
+User "1" --> "*" Trick : creates >
+User "1" --> "*" Comment : writes >
+
+Trick "*" --> "1" User : belongs to >
+Trick "1" --> "*" Comment : has >
+Trick "1" --> "*" Image : has >
+Trick "1" --> "*" Video : has >
+Trick --> Difficulty : has difficulty
+Trick --> TrickType : has trickType
+
+Comment "*" --> "1" Trick : belongs to >
+Comment "*" --> "1" User : written by >
+
+Image "*" --> "1" Trick : belongs to >
+Video "*" --> "1" Trick : belongs to >
+
+' Interface implementations
+Image ..|> MediaInterface
+Video ..|> MediaInterface
+User ..|> UserInterface
+User ..|> PasswordAuthenticatedUserInterface
+
+@enduml

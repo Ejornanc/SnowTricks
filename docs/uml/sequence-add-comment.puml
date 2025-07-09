@@ -1,0 +1,48 @@
+@startuml
+actor "Authenticated User" as User
+participant "TrickController" as TC
+participant "CommentType" as CT
+participant "Comment" as Comment
+participant "EntityManager" as EM
+database "Database" as DB
+
+User -> TC: GET /trick/{slug}
+TC -> EM: findOneBy(slug)
+EM -> DB: SELECT * FROM tricks WHERE slug=?
+DB --> EM: Trick data
+EM --> TC: Trick object
+
+alt trick not found
+    TC --> User: throw NotFoundException
+else trick found
+    TC -> Comment: new Comment()
+    Comment --> TC: comment object
+    TC -> Comment: setTrick(trick)
+    
+    alt user is authenticated
+        TC -> Comment: setUser(currentUser)
+    end
+    
+    TC -> CT: createForm(CommentType::class, comment)
+    CT --> TC: form
+    TC -> User: display trick with comment form
+    
+    User -> TC: submit comment form (content)
+    TC -> CT: handleRequest(request)
+    CT --> TC: form with data
+    
+    alt form is valid
+        TC -> Comment: setCreatedAt(new DateTimeImmutable())
+        TC -> EM: persist(comment)
+        EM -> EM: flush()
+        EM -> DB: INSERT INTO comments
+        DB --> EM: comment saved
+        EM --> TC: success
+        
+        TC -> TC: addFlash('success', 'Commentaire ajouté avec succès.')
+        TC --> User: redirect to trick page
+    else form is invalid
+        TC --> User: display trick with form errors
+    end
+end
+@enduml

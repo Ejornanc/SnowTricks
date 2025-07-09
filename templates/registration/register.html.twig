@@ -24,6 +24,9 @@
             {{ form_row(registrationForm.plainPassword, {label: 'Password'}) }}
             {{ form_row(registrationForm.email) }}
             <button type="submit" class="btn btn-lg btn-primary">Create an account</button>
+            <p style="margin-top: 20px;">
+                Vous avez déjà un compte </p>
+            <a href="{{ path('app_login') }}">Already an account</a>
             {{ form_end(registrationForm) }}
         </form>
     </div>

@@ -52,7 +52,7 @@ final class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Supprimer les images vides
             foreach ($trick->getImages() as $image) {
-                if ($image->getImageFile() === null) {
+                if ($image->getImageFile() === null && $image->getUrl() === null) {
                     $trick->removeImage($image);
                 } else {
                     $image->setTrick($trick); // utile si le setTrick n’est pas automatique
@@ -129,5 +129,63 @@ final class TrickController extends AbstractController
 
         return $this->redirectToRoute('home');
     }
+
+    #[Route('/trick/{slug}/edit', name: 'trick_edit')]
+    public function edit(string $slug, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $trick = $em->getRepository(Trick::class)->findOneBy(['slug' => $slug]);
+
+        if (!$trick) {
+            throw $this->createNotFoundException('Trick non trouvé');
+        }
+
+        // Vérifie si l'utilisateur est connecté
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Utilise le même formulaire que la création (NewTricksForm)
+        $form = $this->createForm(NewTricksForm::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $images = $trick->getImages();
+            if (!$images->isEmpty()) {
+                $lastImage = $images->last();
+                if ($lastImage?->getImageFile()) {
+                    $trick->addImage(new \App\Entity\Image());
+                    $form = $this->createForm(NewTricksForm::class, $trick);
+                    $form->handleRequest($request);
+                }
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Supprimer les images vides
+            foreach ($trick->getImages() as $image) {
+                if ($image->getImageFile() === null) {
+                    $trick->removeImage($image);
+                } else {
+                    $image->setTrick($trick);
+                }
+            }
+
+            $cleanName = strip_tags($trick->getName());
+            $newSlug = $slugger->slug($cleanName)->lower();
+            $trick->setSlug($newSlug);
+
+            $em->flush();
+
+            $this->addFlash('success', 'Trick mis à jour avec succès.');
+
+            return $this->redirectToRoute('trick_show', ['slug' => $newSlug]);
+        }
+
+        return $this->render('trick/edit.html.twig', [
+            'form' => $form->createView(),
+            'trick' => $trick,
+        ]);
+    }
+
 
 }

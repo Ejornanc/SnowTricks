@@ -29,7 +29,7 @@ class NewTricksForm extends AbstractType
                 'label' => false,
                 'row_attr' => ['class' => 'new-trick-form-description'],
             ])
-            ->add('Trick_Type', EnumType::class, [
+            ->add('trickType', EnumType::class, [
                 'class' => TrickType::class,
                 'label' => false,
                 'choice_label' => fn (TrickType $choice) => ucfirst($choice->value),
@@ -46,6 +46,7 @@ class NewTricksForm extends AbstractType
             ->add('images', CollectionType::class, [
                 'entry_type' => TrickImageType::class,
                 'entry_options' => ['label' => false],
+                'label' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,

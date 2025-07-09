@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Trick
 {
     #[ORM\Id]
@@ -70,6 +71,12 @@ class Trick
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        // ❌ Ne pas initialiser updatedAt ici
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
         $this->updatedAt = new \DateTimeImmutable();
     }
 

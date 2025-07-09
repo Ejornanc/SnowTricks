@@ -95,3 +95,140 @@
 .comment-meta strong {
     margin: 0;
 }
+
+.trick-banner {
+    position: relative;
+    /* tes autres styles existants */
+}
+
+.banner-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px; /* espace entre les boutons */
+}
+
+.banner-actions .card-action-button svg {
+    background: white; /* optionnel : fond blanc pour contraste */
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.trick-description {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.trick-description h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.trick-description p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.trick-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.badge {
+    display: inline-block;
+    background-color: #eee;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 40px auto;
+    width: 80%;
+}
+
+.add-comment {
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+}
+
+.add-comment h3 {
+    margin-bottom: 20px;
+}
+
+.add-comment form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-comment button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 1em;
+}
+
+.comments {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+}
+
+.comments h2 {
+    margin-bottom: 20px;
+}
+
+.comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment {
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0;
+    text-align: left;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.comment-meta .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-content {
+    margin-left: 50px; /* espace sous l'avatar */
+}
+
+.trick-title-overlay {
+    background: rgba(0, 0, 0, 0.5); /* fond noir transparent */
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.trick-title-overlay h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+}

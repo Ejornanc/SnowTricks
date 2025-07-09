@@ -1,0 +1,79 @@
+@startuml
+actor "Visitor" as User
+participant "SecurityController" as SC
+participant "Form" as Form
+participant "AuthenticationUtils" as AU
+participant "UserProvider" as UP
+participant "UserChecker" as UC
+participant "PasswordHasher" as PH
+participant "SecurityToken" as ST
+database "Database" as DB
+
+' Affichage du formulaire de login
+User -> SC: GET /login
+note right of SC: Route: app_login
+SC -> AU: getLastAuthenticationError()
+AU --> SC: error (if any)
+SC -> AU: getLastUsername()
+AU --> SC: last username
+SC -> SC: render login.html.twig
+SC --> User: display login form
+
+' Soumission du formulaire de login
+User -> SC: POST /login (username, password)
+note right of SC: Form submit with CSRF token
+SC -> Form: handleRequest(request)
+Form --> SC: form with data
+
+alt form is valid
+    ' Chargement de l'utilisateur
+    SC -> UP: loadUserByUsername(username)
+    UP -> DB: SELECT * FROM users WHERE username=?
+
+    alt user not found
+        DB --> UP: no data
+        UP --> SC: UserNotFoundException
+        SC --> User: display login form with error
+    else user found
+        DB --> UP: User data
+        UP --> SC: User object
+
+        ' Vérification de l'utilisateur
+        SC -> UC: checkPreAuth(user)
+        note right of UC: Vérifie si l'utilisateur est vérifié
+
+        alt user not verified
+            UC --> SC: CustomUserMessageAccountStatusException
+            note right of SC: "Votre compte n'a pas encore été validé"
+            SC --> User: display login form with error
+        else user verified
+            UC --> SC: success
+
+            ' Vérification du mot de passe
+            SC -> PH: isPasswordValid(user, password)
+            note right of PH: Compare le mot de passe haché
+
+            alt password invalid
+                PH --> SC: false
+                SC --> User: display login form with error
+            else password valid
+                PH --> SC: true
+
+                ' Création du token d'authentification
+                SC -> ST: createAuthenticatedToken(user)
+                ST --> SC: token
+                note right of ST: Token contenant l'utilisateur et ses rôles
+
+                ' Redirection après connexion
+                SC -> SC: redirect to homepage
+                note right of SC: default_target_path: /
+                SC --> User: redirect to homepage
+            end
+        end
+    end
+else form is invalid
+    note right of SC: CSRF token invalide ou champs manquants
+    SC --> User: display login form with errors
+end
+
+@enduml

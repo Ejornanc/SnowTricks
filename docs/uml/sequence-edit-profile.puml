@@ -1,0 +1,57 @@
+@startuml
+actor "Authenticated User" as User
+participant "ProfileController" as PC
+participant "UserType" as UT
+participant "User" as UserEntity
+participant "SluggerInterface" as SI
+participant "EntityManager" as EM
+database "Database" as DB
+participant "Filesystem" as FS
+
+User -> PC: GET /profil
+PC -> PC: getUser()
+PC -> UT: createForm(UserType::class, user)
+UT --> PC: form with user data
+PC -> User: display profile form
+
+User -> PC: POST /profil (username, email, imageFile)
+PC -> UT: handleRequest(request)
+UT --> PC: form with data
+
+alt form is valid
+    PC -> UT: get('imageFile')->getData()
+    UT --> PC: imageFile
+    
+    alt imageFile is not null
+        PC -> UserEntity: getImage()
+        UserEntity --> PC: old image filename
+        
+        alt old image exists
+            PC -> FS: unlink(oldImagePath)
+            note right of FS: Delete old image file
+        end
+        
+        PC -> SI: slug(originalFilename)
+        SI --> PC: safe filename
+        PC -> PC: generate unique filename
+        
+        alt file upload successful
+            PC -> FS: move(imageFile, directory, newFilename)
+            FS --> PC: success
+            PC -> UserEntity: setImage(newFilename)
+        else file upload failed
+            PC -> PC: addFlash('danger', 'Erreur lors de l\'upload de l\'image')
+        end
+    end
+    
+    PC -> EM: flush()
+    EM -> DB: UPDATE users
+    DB --> EM: user updated
+    EM --> PC: success
+    
+    PC -> PC: addFlash('success', 'Profil mis à jour avec succès')
+    PC -> User: redirect to profile page
+else form is invalid
+    PC -> User: display form with errors
+end
+@enduml

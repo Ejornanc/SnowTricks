@@ -1,0 +1,71 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+' Acteurs
+actor Visitor
+actor "Authenticated User" as AuthUser
+
+' Packages pour organiser les cas d'utilisation
+package "Authentication" {
+  usecase "Register" as UC1
+  usecase "Login" as UC2
+  usecase "Logout" as UC3
+  usecase "Verify Email" as UC13
+  usecase "Reset Password" as UC14
+}
+
+package "Trick Management" {
+  usecase "View Tricks List" as UC4
+  usecase "View Trick Detail" as UC5
+  usecase "Create Trick" as UC6
+  usecase "Edit Trick" as UC7
+  usecase "Delete Trick" as UC8
+  usecase "Add Image to Trick" as UC9
+  usecase "Add Video to Trick" as UC10
+}
+
+package "User Interaction" {
+  usecase "Comment Trick" as UC11
+  usecase "Edit Profile" as UC12
+}
+
+' Relations pour Visitor
+Visitor --> UC1
+Visitor --> UC2
+Visitor --> UC4
+Visitor --> UC5
+Visitor --> UC14
+
+' Relations pour AuthUser
+AuthUser --> UC3
+AuthUser --> UC4
+AuthUser --> UC5
+AuthUser --> UC6
+AuthUser --> UC7
+AuthUser --> UC8
+AuthUser --> UC9
+AuthUser --> UC10
+AuthUser --> UC11
+AuthUser --> UC12
+
+' Relations entre cas d'utilisation
+UC1 ..> UC13 : <<include>>
+UC6 ..> UC9 : <<include>>
+UC6 ..> UC10 : <<include>>
+UC7 ..> UC9 : <<include>>
+UC7 ..> UC10 : <<include>>
+
+' Notes explicatives
+note bottom of UC13
+  Après inscription, l'utilisateur 
+  doit vérifier son email
+end note
+
+note bottom of UC14
+  Permet de réinitialiser le mot 
+  de passe via email
+end note
+
+@enduml
