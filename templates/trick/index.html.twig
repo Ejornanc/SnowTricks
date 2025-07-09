@@ -9,12 +9,10 @@
 
 {% block content %}
     <section class="trick-index" id="trickIndex">
-        {% set index = 0 %}
         {% for trick in tricks %}
-            {% set index = index + 1 %}
-            <article class="card{% if index > 15 %} hidden-trick{% endif %}" data-href="{{ path('trick_show', { slug: trick.slug }) }}">
+            <article class="card" data-href="{{ path('trick_show', { slug: trick.slug }) }}">
                 <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="card-link">
-                {# Image Trick #}
+                    {# Image Trick #}
                     {% set displayed = false %}
                     {% for image in trick.images %}
                         {% if not displayed %}
@@ -26,9 +24,10 @@
                         <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" class="card-image-default">
                     {% endif %}
 
-                {# Titre Trick #}
-                <h2 class="card-trick-name">{{ trick.name }}</h2>
+                    {# Titre Trick #}
+                    <h2 class="card-trick-name">{{ trick.name }}</h2>
                 </a>
+
                 {# Actions (Modifier, Supprimer) #}
                 {% if app.user %}
                     <div class="card-actions">
@@ -48,21 +47,17 @@
                                 </svg>
                             </button>
                         </form>
-                        </a>
                     </div>
                 {% endif %}
             </article>
         {% endfor %}
-
-        <p>
-            nombre de tricks : {{ tricks|length }}
-        </p>
-
+        {% if tricks|length > 15 %}
+            <a href="#trickIndex" class="scroll-btn scroll-top-fixed" title="Remonter en haut">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                     fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                </svg>
+            </a>
+        {% endif %}
     </section>
-    <a href="#" class="scroll-to-top" id="scrollTopBtn" title="Remonter en haut">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-             fill="none" stroke="black" stroke-width="3" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
-        </svg>
-    </a>
 {% endblock %}

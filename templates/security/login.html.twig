@@ -12,9 +12,8 @@
 {% block content %}
     <div class="form-page">
 
-        <h1 class="form-title">Login</h1>
-
         <form method="post" class="form-form">
+            <h1 class="form-title">Login</h1>
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
@@ -55,9 +54,8 @@
                 </button>
 
                 <p style="margin-top: 20px;">
-                    Pas encore de compte ?
-                    <a href="{{ path('app_register') }}">Créer un compte</a>
-                </p>
+                 Reinitialisation du mot de passe </p>
+                <a href="{{ path('app_forgot_password_request') }}">Forgot Password</a>
             </form>
         {% endif %}
     </div>
