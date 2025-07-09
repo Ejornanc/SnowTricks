@@ -1,6 +1,7 @@
-parameters: {
+parameters:
     trick_images_directory: '%kernel.project_dir%/public/uploads/tricks/images'
-}
+    user_images_directory: '%kernel.project_dir%/public/uploads/users'
+
 
 services:
     App\EventListener\VideoSubscriber:
@@ -22,3 +23,7 @@ services:
         resource: '../src/Validator'
         tags: ['validator.constraint_validator']
         public: true
+
+
+framework:
+    secret: '%env(APP_SECRET)%'

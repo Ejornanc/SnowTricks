@@ -3,7 +3,7 @@
     {% if app.user %}
         <div class="logo">
             <a href="/"><img src="{{ asset('Images/Logo_SnowTricks.png') }}" alt="SnowTricks logo"></a>
-            <li><a href="{{ path('unused') }}">Snowboarder<br>{{ app.user.userIdentifier }}</a></li>
+            <li><a href="{{ path('user_profile') }}">Snowboarder<br>{{ app.user.userIdentifier }}</a></li>
         </div>
         </div>
     {% else %}
