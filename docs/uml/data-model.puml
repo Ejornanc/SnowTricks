@@ -5,20 +5,20 @@ skinparam backgroundColor white
 skinparam roundcorner 15
 
 ' Énumérations
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
+enum Difficulty: {
+  EASY = 'easy'
+  MEDIUM = 'medium'
+  HARD = 'hard'
 }
 
-enum TrickType {
-  GRABS
-  SPINS
-  FLIPS
-  SLIDES_GRINDS
-  BUTTER_TRICKS
-  ONE_FOOT_TRICKS
-  FREESTYLE_AERIAL_TRICKS
+enum TrickType:  {
+  GRABS = 'grabs'
+  SPINS = 'spins'
+  FLIPS = 'flips'
+  SLIDES_GRINDS = 'slides grinds'
+  BUTTER_TRICKS = 'butter tricks'
+  ONE_FOOT_TRICKS = 'one foot tricks'
+  FREESTYLE_AERIAL_TRICKS = 'freestyle aerial tricks'
 }
 
 ' Entités
@@ -31,6 +31,9 @@ entity User {
   isVerified : boolean
   verificationToken : varchar
   image : varchar
+  tricks : Collection<Trick>
+  comments : Collection<Comment>
+  tricks2 : Collection<Trick> [orphanRemoval]
 }
 
 entity Trick {
@@ -39,42 +42,48 @@ entity Trick {
   *slug : varchar
   *description : text
   *difficulty : Difficulty <<FK>>
-  *trickType : TrickType <<FK>>
+  *tricktype : TrickType <<FK>>
   *createdAt : datetime
   updatedAt : datetime
-  *user_id : int <<FK>>
+  *user_id : int <<FK>> [SET NULL]
+  comments : Collection<Comment> [CASCADE]
+  images : Collection<Image> [CASCADE, orphanRemoval]
+  videos : Collection<Video> [CASCADE, orphanRemoval]
 }
 
 entity Image {
   *id : int <<PK>>
   *url : varchar
+  isFeatured : boolean
   *createdAt : datetime
   updatedAt : datetime
   imageFile : File
-  *trick_id : int <<FK>>
+  *trick_id : int <<FK>> [CASCADE]
 }
 
 entity Video {
   *id : int <<PK>>
   *url : varchar
+  skipValidation : boolean [transient]
   *createdAt : datetime
-  *trick_id : int <<FK>>
+  *trick_id : int <<FK>> [CASCADE]
 }
 
 entity Comment {
   *id : int <<PK>>
   *content : text
   *createdAt : datetime
-  user_id : int <<FK>>
-  *trick_id : int <<FK>>
+  user_id : int <<FK>> [SET NULL]
+  *trick_id : int <<FK>> [CASCADE]
 }
 
 ' Relations
-User ||--o{ Trick : crée
-User ||--o{ Comment : écrit
-Trick ||--o{ Image : contient
-Trick ||--o{ Video : contient
-Trick ||--o{ Comment : reçoit
+User ||--o{ Trick : crée [SET NULL]
+User ||--o{ Trick : crée [orphanRemoval]
+User ||--o{ Comment : écrit [SET NULL]
+Trick ||--o{ Image : contient [CASCADE, orphanRemoval]
+Trick ||--o{ Video : contient [CASCADE, orphanRemoval]
+Trick ||--o{ Comment : reçoit [CASCADE]
 Trick }|--|| Difficulty : a comme difficulté
 Trick }|--|| TrickType : a comme type
 

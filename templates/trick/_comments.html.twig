@@ -1,0 +1,13 @@
+{% for comment in comments %}
+    <li class="comment">
+        <div class="comment-meta">
+            {% set profileImage = comment.user.image ? asset('uploads/users/' ~ comment.user.image) : asset('Images/Default_User_Image.png') %}
+            <img src="{{ profileImage }}" alt="Avatar de {{ comment.user }}" class="avatar">
+
+            <strong>{{ comment.user }}</strong> — le {{ comment.createdAt|date('d/m/Y à H:i') }}
+        </div>
+        <div class="comment-content">
+            {{ comment.content|nl2br }}
+        </div>
+    </li>
+{% endfor %}

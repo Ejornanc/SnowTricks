@@ -82,6 +82,11 @@ final class TrickController extends AbstractController
             throw $this->createNotFoundException('Trick non trouvé');
         }
 
+        // Get the first 10 comments
+        $commentRepository = $em->getRepository(Comment::class);
+        $comments = $commentRepository->findByTrickWithPagination($trick->getId(), 10, 0);
+        $totalComments = $commentRepository->countByTrick($trick->getId());
+
         // Toujours définir $form avant le return
         $comment = new Comment();
         $comment->setTrick($trick);
@@ -105,6 +110,8 @@ final class TrickController extends AbstractController
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
+            'comments' => $comments,
+            'totalComments' => $totalComments,
             'commentForm' => $form->createView(),
         ]);
     }
@@ -248,4 +255,23 @@ final class TrickController extends AbstractController
     }
 
 
+    #[Route('/trick/{slug}/comments', name: 'trick_load_more_comments')]
+    public function loadMoreComments(string $slug, Request $request, EntityManagerInterface $em): Response
+    {
+        $trick = $em->getRepository(Trick::class)->findOneBy(['slug' => $slug]);
+
+        if (!$trick) {
+            throw $this->createNotFoundException('Trick non trouvé');
+        }
+
+        $offset = $request->query->getInt('offset', 0);
+        $limit = $request->query->getInt('limit', 10);
+
+        $commentRepository = $em->getRepository(Comment::class);
+        $comments = $commentRepository->findByTrickWithPagination($trick->getId(), $limit, $offset);
+
+        return $this->render('trick/_comments.html.twig', [
+            'comments' => $comments,
+        ]);
+    }
 }

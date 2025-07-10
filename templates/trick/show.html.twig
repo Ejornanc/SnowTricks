@@ -136,22 +136,18 @@
         <section class="comments">
             <h2>Commentaires</h2>
 
-            {% if trick.comments is not empty %}
-                <ul class="comment-list">
-                    {% for comment in trick.comments %}
-                        <li class="comment">
-                            <div class="comment-meta">
-                                {% set profileImage = comment.user.image ? asset('uploads/users/' ~ comment.user.image) : asset('Images/Default_User_Image.png') %}
-                                <img src="{{ profileImage }}" alt="Avatar de {{ comment.user }}" class="avatar">
-
-                                <strong>{{ comment.user }}</strong> — le {{ comment.createdAt|date('d/m/Y à H:i') }}
-                            </div>
-                            <div class="comment-content">
-                                {{ comment.content|nl2br }}
-                            </div>
-                        </li>
-                    {% endfor %}
+            {% if comments is not empty %}
+                <ul class="comment-list" id="comment-list">
+                    {% include 'trick/_comments.html.twig' with {'comments': comments} %}
                 </ul>
+
+                {% if totalComments > comments|length %}
+                    <div class="load-more-container">
+                        <button id="load-more-comments" class="load-more-btn" data-offset="{{ comments|length }}" data-slug="{{ trick.slug }}">
+                            Charger plus de commentaires
+                        </button>
+                    </div>
+                {% endif %}
             {% else %}
                 <p>Aucun commentaire pour le moment. Soyez le premier à commenter !</p>
             {% endif %}
@@ -162,11 +158,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize lightbox
             new SimpleLightbox('.media-gallery a.lightbox-image', {
                 /* options */
                 captionsData: 'alt',
                 captionDelay: 250
             });
+
+            // Load more comments functionality
+            const loadMoreBtn = document.getElementById('load-more-comments');
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', function() {
+                    const offset = parseInt(this.getAttribute('data-offset'));
+                    const slug = this.getAttribute('data-slug');
+                    const limit = 10;
+
+                    // Disable button while loading
+                    this.disabled = true;
+                    this.textContent = 'Chargement...';
+
+                    // Fetch more comments
+                    fetch(`/trick/${slug}/comments?offset=${offset}&limit=${limit}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            // Append new comments to the list
+                            const commentList = document.getElementById('comment-list');
+                            commentList.insertAdjacentHTML('beforeend', html);
+
+                            // Update button data-offset
+                            const newOffset = offset + limit;
+                            this.setAttribute('data-offset', newOffset);
+
+                            // Check if there are more comments to load
+                            const totalComments = {{ totalComments }};
+                            if (newOffset >= totalComments) {
+                                // No more comments to load, hide the button
+                                this.parentElement.style.display = 'none';
+                            } else {
+                                // Re-enable the button
+                                this.disabled = false;
+                                this.textContent = 'Charger plus de commentaires';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading more comments:', error);
+                            this.disabled = false;
+                            this.textContent = 'Erreur. Réessayer';
+                        });
+                });
+            }
         });
     </script>
 {% endblock %}

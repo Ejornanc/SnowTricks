@@ -21,20 +21,20 @@ interface PasswordAuthenticatedUserInterface {
 }
 
 ' Enums
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
+enum Difficulty: {
+  EASY = 'easy'
+  MEDIUM = 'medium'
+  HARD = 'hard'
 }
 
-enum TrickType {
-  GRABS
-  SPINS
-  FLIPS
-  SLIDES_GRINDS
-  BUTTER_TRICKS
-  ONE_FOOT_TRICKS
-  FREESTYLE_AERIAL_TRICKS
+enum TrickType:  {
+  GRABS = 'grabs'
+  SPINS = 'spins'
+  FLIPS = 'flips'
+  SLIDES_GRINDS = 'slides grinds'
+  BUTTER_TRICKS = 'butter tricks'
+  ONE_FOOT_TRICKS = 'one foot tricks'
+  FREESTYLE_AERIAL_TRICKS = 'freestyle aerial tricks'
 }
 
 ' Classes
@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
   +isVerified : bool
   +verificationToken : string
   +image : string
+  +tricks : Collection<Trick>
+  +comments : Collection<Comment>
+  +tricks2 : Collection<Trick>
   +getId() : int
   +getUsername() : string
   +setUsername(username : string) : static
@@ -65,6 +68,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
   +setImage(image : string) : self
   +getVerificationToken() : string
   +setVerificationToken(verificationToken : string) : self
+  +getTricks() : Collection
+  +addTrick(trick : Trick) : static
+  +removeTrick(trick : Trick) : static
+  +getComments() : Collection
+  +addComment(comment : Comment) : static
+  +removeComment(comment : Comment) : static
 }
 
 class Trick {
@@ -73,13 +82,13 @@ class Trick {
   +slug : string
   +description : string
   +difficulty : Difficulty
-  +trickType : TrickType
+  +tricktype : TrickType
   +createdAt : DateTimeImmutable
   +updatedAt : DateTimeImmutable
   +user : User
   +comments : Collection<Comment>
-  +images : Collection<Image>
-  +videos : Collection<Video>
+  +images : Collection<Image> [cascade: persist, remove; orphanRemoval: true]
+  +videos : Collection<Video> [cascade: persist, remove; orphanRemoval: true]
   +getId() : int
   +getName() : string
   +setName(name : string) : static
@@ -106,14 +115,15 @@ class Trick {
   +getVideos() : Collection
   +addVideo(video : Video) : static
   +removeVideo(video : Video) : static
+  +setUpdatedAtValue() : void
 }
 
 class Comment {
   +id : int
   +content : string
   +createdAt : DateTimeImmutable
-  +user : User
-  +trick : Trick
+  +user : User [onDelete: SET NULL]
+  +trick : Trick [onDelete: CASCADE]
   +getId() : int
   +getContent() : string
   +setContent(content : string) : static
@@ -128,13 +138,16 @@ class Comment {
 class Image implements MediaInterface {
   +id : int
   +url : string
+  +isFeatured : bool
   +createdAt : DateTimeImmutable
   +updatedAt : DateTimeImmutable
   +imageFile : File
-  +trick : Trick
+  +trick : Trick [onDelete: CASCADE]
   +getId() : int
   +getUrl() : string
   +setUrl(url : string) : static
+  +isFeatured() : bool
+  +setIsFeatured(isFeatured : bool) : static
   +getCreatedAt() : DateTimeImmutable
   +setCreatedAt(createdAt : DateTimeImmutable) : static
   +getUpdatedAt() : DateTimeInterface
@@ -148,11 +161,14 @@ class Image implements MediaInterface {
 class Video implements MediaInterface {
   +id : int
   +url : string
+  -skipValidation : bool
   +createdAt : DateTimeImmutable
-  +trick : Trick
+  +trick : Trick [onDelete: CASCADE]
   +getId() : int
   +getUrl() : string
   +setUrl(url : string) : static
+  +isSkipValidation() : bool
+  +setSkipValidation(skipValidation : bool) : static
   +getCreatedAt() : DateTimeImmutable
   +setCreatedAt(createdAt : DateTimeImmutable) : static
   +getTrick() : Trick
@@ -161,21 +177,22 @@ class Video implements MediaInterface {
 }
 
 ' Relationships
-User "1" --> "*" Trick : creates >
-User "1" --> "*" Comment : writes >
+User "1" --> "*" Trick : creates > [SET NULL]
+User "1" --> "*" Trick : creates > [orphanRemoval]
+User "1" --> "*" Comment : writes > [SET NULL]
 
-Trick "*" --> "1" User : belongs to >
-Trick "1" --> "*" Comment : has >
-Trick "1" --> "*" Image : has >
-Trick "1" --> "*" Video : has >
+Trick "*" --> "1" User : belongs to > [SET NULL]
+Trick "1" --> "*" Comment : has > [CASCADE]
+Trick "1" --> "*" Image : has > [CASCADE, orphanRemoval]
+Trick "1" --> "*" Video : has > [CASCADE, orphanRemoval]
 Trick --> Difficulty : has difficulty
 Trick --> TrickType : has trickType
 
-Comment "*" --> "1" Trick : belongs to >
-Comment "*" --> "1" User : written by >
+Comment "*" --> "1" Trick : belongs to > [CASCADE]
+Comment "*" --> "1" User : written by > [SET NULL]
 
-Image "*" --> "1" Trick : belongs to >
-Video "*" --> "1" Trick : belongs to >
+Image "*" --> "1" Trick : belongs to > [CASCADE]
+Video "*" --> "1" Trick : belongs to > [CASCADE]
 
 ' Interface implementations
 Image ..|> MediaInterface

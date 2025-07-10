@@ -62,10 +62,6 @@ html {
     stroke: white;
 }
 
-.logo li a {
-    display: inline-block; /* assure que margin fonctionne */
-    margin-left: 10px; /* ajuste la valeur selon ton besoin */
-}
 
 .mobile-only {
     display: none;
