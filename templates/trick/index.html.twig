@@ -14,12 +14,24 @@
                 <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="card-link">
                     {# Image Trick #}
                     {% set displayed = false %}
+
+                    {# D'abord chercher l'image featured #}
                     {% for image in trick.images %}
-                        {% if not displayed %}
+                        {% if image.isFeatured and not displayed %}
                             <img src="{{ asset('uploads/tricks/images/' ~ image.url) }}" alt="Image de {{ trick.name }}" class="card-image">
                             {% set displayed = true %}
                         {% endif %}
                     {% endfor %}
+
+                    {# Si pas d'image featured, prendre la première #}
+                    {% if not displayed %}
+                        {% for image in trick.images %}
+                            {% if not displayed %}
+                                <img src="{{ asset('uploads/tricks/images/' ~ image.url) }}" alt="Image de {{ trick.name }}" class="card-image">
+                                {% set displayed = true %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                     {% if not displayed %}
                         <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" class="card-image-default">
                     {% endif %}
@@ -31,7 +43,7 @@
                 {# Actions (Modifier, Supprimer) #}
                 {% if app.user %}
                     <div class="card-actions">
-                        <a href="{{ path('unused', { slug: trick.slug }) }}" class="card-action-button" title="Modifier">
+                        <a href="{{ path('trick_edit', { slug: trick.slug }) }}" class="card-action-button" title="Modifier">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
                             </svg>

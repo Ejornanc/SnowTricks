@@ -18,6 +18,9 @@ class Image implements MediaInterface
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isFeatured = false;
+
     #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -97,5 +100,16 @@ class Image implements MediaInterface
     public function getImageFile(): ?File
     {
         return $this->imageFile;
+    }
+
+    public function isFeatured(): bool
+    {
+        return $this->isFeatured;
+    }
+
+    public function setIsFeatured(bool $isFeatured): static
+    {
+        $this->isFeatured = $isFeatured;
+        return $this;
     }
 }

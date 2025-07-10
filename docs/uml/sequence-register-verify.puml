@@ -1,0 +1,80 @@
+@startuml
+actor "Visitor" as User
+participant "RegistrationController" as RC
+participant "RegistrationFormType" as RFT
+participant "User" as UserEntity
+participant "UserPasswordHasher" as UPH
+participant "EmailVerifier" as EV
+participant "EntityManager" as EM
+database "Database" as DB
+
+' Registration process
+User -> RC: GET /register
+RC -> RFT: createForm(RegistrationFormType::class, user)
+RFT --> RC: registration form
+RC -> User: display registration form
+
+User -> RC: POST /register (username, email, password)
+RC -> RFT: handleRequest(request)
+RFT --> RC: form with data
+
+alt form is valid
+    RC -> UserEntity: new User()
+    UserEntity --> RC: user object
+    
+    RC -> UPH: hashPassword(user, plainPassword)
+    UPH --> RC: hashed password
+    RC -> UserEntity: setPassword(hashedPassword)
+    
+    RC -> UserEntity: setIsVerified(false)
+    
+    RC -> EM: persist(user)
+    EM -> DB: INSERT INTO users
+    DB --> EM: user saved
+    EM -> EM: flush()
+    EM --> RC: success
+    
+    RC -> EV: sendEmailConfirmation('app_verify_email', user, email)
+    EV --> User: send confirmation email
+    
+    RC -> User: redirect to check email page
+else form is invalid
+    RC -> User: display form with errors
+end
+
+' Email verification process
+User -> User: click on verification link in email
+User -> RC: GET /verify/email?id=userId&token=verificationToken
+RC -> RC: get user id from request
+
+alt user id is null
+    RC -> User: redirect to register page
+else user id is not null
+    RC -> EM: find(id)
+    EM -> DB: SELECT * FROM users WHERE id=?
+    DB --> EM: user data
+    EM --> RC: user object
+    
+    alt user not found
+        RC -> User: redirect to register page
+    else user found
+        RC -> EV: handleEmailConfirmation(request, user)
+        
+        alt verification successful
+            EV -> UserEntity: setIsVerified(true)
+            EV -> EM: flush()
+            EM -> DB: UPDATE users SET is_verified=true
+            DB --> EM: user updated
+            EM --> EV: success
+            EV --> RC: success
+            
+            RC -> RC: addFlash('success', 'Your email address has been verified.')
+            RC -> User: redirect to login page
+        else verification failed
+            EV --> RC: VerifyEmailExceptionInterface
+            RC -> RC: addFlash('verify_email_error', error message)
+            RC -> User: redirect to register page
+        end
+    end
+end
+@enduml

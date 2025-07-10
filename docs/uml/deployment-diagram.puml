@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Deployment>
+
+title "Diagramme de déploiement - SnowTricks"
+
+Deployment_Node(client, "Client", "Navigateur Web") {
+    Container(browser, "Navigateur Web", "Chrome, Firefox, Safari, Edge", "Interface utilisateur")
+}
+
+Deployment_Node(webServer, "Serveur Web", "Nginx/Apache") {
+    Deployment_Node(phpRuntime, "Environnement PHP", "PHP 8.x") {
+        Container(app, "Application Symfony", "PHP, Symfony 6.x", "Application web SnowTricks")
+    }
+}
+
+Deployment_Node(dbServer, "Serveur de base de données", "MySQL 8.x") {
+    ContainerDb(db, "Base de données", "MySQL", "Stocke les données de l'application")
+}
+
+Deployment_Node(fileServer, "Serveur de fichiers", "Système de fichiers") {
+    Container(fileStorage, "Stockage de fichiers", "Système de fichiers", "Stocke les images des tricks et des utilisateurs")
+}
+
+Deployment_Node(mailServer, "Serveur de messagerie", "SMTP") {
+    Container(mailService, "Service d'emails", "SMTP", "Envoie des emails de confirmation et de réinitialisation de mot de passe")
+}
+
+Rel(browser, app, "Envoie des requêtes HTTP/HTTPS", "HTTPS")
+Rel(app, db, "Lit et écrit des données", "MySQL Protocol")
+Rel(app, fileStorage, "Stocke et récupère des fichiers", "File I/O")
+Rel(app, mailService, "Envoie des emails", "SMTP")
+
+@enduml

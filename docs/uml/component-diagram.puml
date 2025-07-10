@@ -1,0 +1,46 @@
+@startuml
+!include <C4/C4_Component>
+
+title "Diagramme de composants - SnowTricks"
+
+Container_Boundary(app, "Application Symfony") {
+    Component(controllers, "Controllers", "PHP", "Gèrent les requêtes HTTP et retournent les réponses")
+    Component(entities, "Entities", "PHP", "Modèles de données")
+    Component(repositories, "Repositories", "PHP", "Accès aux données")
+    Component(forms, "Forms", "PHP", "Gestion des formulaires")
+    Component(security, "Security", "PHP", "Authentification et autorisation")
+    Component(templates, "Templates", "Twig", "Vues de l'application")
+    Component(services, "Services", "PHP", "Logique métier")
+    Component(validators, "Validators", "PHP", "Validation des données")
+    Component(enums, "Enums", "PHP", "Types énumérés")
+}
+
+System_Ext(database, "Base de données", "MySQL")
+System_Ext(filesystem, "Système de fichiers", "Stockage des images")
+System_Ext(mailer, "Service d'emails", "SMTP")
+
+Rel(controllers, entities, "Utilise")
+Rel(controllers, repositories, "Utilise")
+Rel(controllers, forms, "Utilise")
+Rel(controllers, security, "Utilise")
+Rel(controllers, templates, "Rend")
+Rel(controllers, services, "Utilise")
+Rel(controllers, filesystem, "Stocke/Récupère des fichiers")
+Rel(controllers, mailer, "Envoie des emails")
+
+Rel(repositories, database, "Interroge")
+Rel(repositories, entities, "Retourne")
+
+Rel(forms, entities, "Mappe vers")
+Rel(forms, validators, "Utilise")
+Rel(forms, enums, "Utilise")
+
+Rel(entities, enums, "Utilise")
+
+Rel(security, entities, "Authentifie")
+Rel(security, repositories, "Vérifie")
+
+Rel(services, repositories, "Utilise")
+Rel(services, entities, "Manipule")
+
+@enduml

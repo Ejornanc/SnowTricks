@@ -1,0 +1,105 @@
+@startuml
+title "Diagramme d'activité - SnowTricks"
+
+start
+
+:Accéder à la page d'accueil;
+
+if (Utilisateur connecté?) then (oui)
+  :Afficher les options d'utilisateur connecté;
+else
+  :Afficher les options de connexion/inscription;
+endif
+
+while (Continuer à utiliser l'application?) is (oui)
+  :Parcourir les tricks;
+
+  if (Voir détails d'un trick?) then (oui)
+    :Afficher la page de détail du trick;
+
+    if (Utilisateur connecté?) then (oui)
+      if (Ajouter un commentaire?) then (oui)
+        :Soumettre un commentaire;
+        :Afficher le commentaire;
+      endif
+
+      if (Propriétaire du trick?) then (oui)
+        if (Modifier le trick?) then (oui)
+          :Afficher le formulaire d'édition;
+          :Soumettre les modifications;
+          :Mettre à jour le trick;
+        endif
+
+        if (Supprimer le trick?) then (oui)
+          :Confirmer la suppression;
+          :Supprimer le trick;
+          :Rediriger vers la page d'accueil;
+        endif
+      endif
+    endif
+  endif
+
+  if (Utilisateur connecté?) then (oui)
+    if (Créer un nouveau trick?) then (oui)
+      :Afficher le formulaire de création;
+      :Soumettre le nouveau trick;
+      :Créer le trick;
+      :Rediriger vers la page du trick;
+    endif
+
+    if (Gérer le profil?) then (oui)
+      :Afficher la page de profil;
+      :Modifier les informations du profil;
+      :Mettre à jour le profil;
+    endif
+
+    if (Se déconnecter?) then (oui)
+      :Déconnecter l'utilisateur;
+      :Rediriger vers la page d'accueil;
+    endif
+  else
+    if (Se connecter?) then (oui)
+      :Afficher le formulaire de connexion;
+      :Soumettre les identifiants;
+
+      if (Identifiants valides?) then (oui)
+        :Connecter l'utilisateur;
+        :Rediriger vers la page d'accueil;
+      else
+        :Afficher les erreurs;
+      endif
+    endif
+
+    if (S'inscrire?) then (oui)
+      :Afficher le formulaire d'inscription;
+      :Soumettre les informations;
+
+      if (Informations valides?) then (oui)
+        :Créer le compte utilisateur;
+        :Envoyer l'email de confirmation;
+        :Rediriger vers la page de vérification;
+
+        :Utilisateur vérifie son email;
+        :Activer le compte;
+      else
+        :Afficher les erreurs;
+      endif
+    endif
+
+    if (Mot de passe oublié?) then (oui)
+      :Afficher le formulaire de réinitialisation;
+      :Soumettre l'email;
+      :Envoyer l'email de réinitialisation;
+
+      :Utilisateur clique sur le lien de réinitialisation;
+      :Afficher le formulaire de nouveau mot de passe;
+      :Soumettre le nouveau mot de passe;
+      :Mettre à jour le mot de passe;
+    endif
+  endif
+
+  :Retour à la page d'accueil;
+endwhile
+
+stop
+@enduml

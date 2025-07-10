@@ -1,0 +1,32 @@
+@startuml
+actor "Authenticated User" as User
+participant "TrickController" as TC
+participant "EntityManager" as EM
+database "Database" as DB
+
+User -> TC: submit delete request (POST /trick/{slug}/delete)
+TC -> TC: findOneBy(slug)
+note right of TC: Retrieve trick by slug
+
+alt trick not found
+    TC --> User: throw NotFoundException
+else trick found
+    TC -> TC: isCsrfTokenValid('delete_trick_' . trick.id, token)
+    note right of TC: Verify CSRF token
+
+    alt token is valid
+        TC -> EM: remove(trick)
+        EM -> DB: DELETE FROM tricks
+        note right of DB: CASCADE delete related images, videos, comments
+
+        DB --> EM: data deleted
+        EM -> EM: flush()
+        EM --> TC: success
+
+        TC -> TC: addFlash('success', 'Trick supprimé avec succès.')
+        TC --> User: redirect to home page
+    else token is invalid
+        TC --> User: redirect to home page
+    end
+end
+@enduml

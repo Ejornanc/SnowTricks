@@ -1,0 +1,171 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Modifier {{ trick.name }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('Css/Computer/EditTrick.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="trick-container">
+
+        {# === Bannière === #}
+        {% set bannerImage = null %}
+        {% for image in trick.images %}
+            {% if image.isFeatured %}
+                {% set bannerImage = asset('uploads/tricks/images/' ~ image.url) %}
+                {% set featuredFound = true %}
+            {% endif %}
+        {% endfor %}
+
+        {# Si aucune image n'est marquée comme featured, utiliser la première #}
+        {% if bannerImage is null %}
+            {% for image in trick.images %}
+                {% if loop.first %}
+                    {% set bannerImage = asset('uploads/tricks/images/' ~ image.url) %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if bannerImage is null %}
+            {% set bannerImage = asset('Images/no_image_available.png') %}
+        {% endif %}
+
+        {{ form_start(form) }}
+
+        <div class="trick-banner" style="background-image: url('{{ bannerImage }}')">
+            <div class="trick-title-overlay">
+                {{ form_row(form.name, {'label': false}) }}
+            </div>
+        </div>
+
+        {# === Galerie images + vidéos === #}
+        <div class="media-gallery">
+            {% set hasImages = trick.images|length > 0 %}
+            {% set hasVideos = trick.videos|length > 0 %}
+
+            <div class="media-gallery-actions">
+                <button type="button" id="add-image-btn" class="add-media-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/>
+                    </svg>
+                    Ajouter une image
+                </button>
+                <button type="button" id="add-video-btn" class="add-media-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/>
+                    </svg>
+                    Ajouter une vidéo
+                </button>
+            </div>
+
+            {# === Container for new images (hidden initially) === #}
+            <div id="images-collection" style="display: none;"
+                 data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+            </div>
+
+            {# === Affichage des images === #}
+            {% if hasImages %}
+                {% for imageForm in form.images %}
+                    <div class="media-item media-item-edit">
+                        <img src="{{ asset('uploads/tricks/images/' ~ trick.images[loop.index0].url) }}" alt="Image du trick">
+
+                        <div class="media-actions">
+                            <button type="button" class="edit-media-button" data-target="#image-field-{{ loop.index0 }}" title="Modifier">
+                                <!-- icône crayon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                                </svg>
+                            </button>
+
+                            <button type="button" class="delete-media-button" title="Supprimer">
+                                <!-- icône poubelle -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+                                    <path d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="image-field-{{ loop.index0 }}" style="display: none;">
+                            {{ form_row(imageForm.imageFile) }}
+                            {{ form_row(imageForm.url) }}
+                            <div class="featured-image-option">
+                                {{ form_row(imageForm.isFeatured) }}
+                                <small class="form-text text-muted">Cette image sera utilisée comme image à la une</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="media-item">
+                    <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible">
+                </div>
+            {% endif %}
+
+            {# === Container for new videos (hidden initially) === #}
+            <div id="videos-collection" style="display: none;"
+                 data-prototype="{{ form_widget(form.videos.vars.prototype)|e('html_attr') }}">
+            </div>
+
+            {# === Affichage des vidéos === #}
+            {% if hasVideos %}
+                {% for videoForm in form.videos %}
+                    <div class="media-item media-item-edit">
+                        <iframe src="{{ trick.videos[loop.index0].url }}" allowfullscreen></iframe>
+
+                        <div class="media-actions">
+                            <button type="button" class="edit-media-button" data-target="#video-field-{{ loop.index0 }}" title="Modifier">
+                                <!-- icône crayon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                                </svg>
+                            </button>
+
+                            <button type="button" class="delete-media-button" title="Supprimer">
+                                <!-- icône poubelle -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+                                    <path d="M3 6h18v2H3V6zm2 3h14v13H5V9zm5 2v9h2v-9H10zm4 0v9h2v-9h-2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="video-field-{{ loop.index0 }}" style="display: none;">
+                            {{ form_row(videoForm.url) }}
+                            {{ form_row(videoForm.isModified) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="media-item">
+                    <img src="{{ asset('Images/no_video_available.png') }}" alt="Aucune vidéo disponible">
+                </div>
+            {% endif %}
+        </div>
+
+        {# === Description === #}
+        <section class="trick-description-section">
+            <div class="description-content">
+                <h2>Description</h2>
+                {{ form_row(form.description) }}
+            </div>
+        </section>
+
+        {# === Metadata === #}
+        <section class="trick-metadata-section">
+            <div class="trick-metadata">
+                {{ form_row(form.trickType) }}
+                {{ form_row(form.difficulty) }}
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="cancel-button">Annuler</a>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    <script src="{{ asset('js/EditTrick.js') }}"></script>
+{% endblock %}
