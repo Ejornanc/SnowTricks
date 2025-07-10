@@ -1,68 +1,7 @@
-.form-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
+@media (max-width: 768px) {
 
-.form-title {
-    margin-bottom: 1%;
-}
+    .form-form button {
+        border-radius: 50px;
+    }
 
-.form-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 25%;
-    width: 100%;
-    padding: 5%;
-    background-color: #9e1212;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border-radius: 10px;
-    text-align: center;
-}
-
-.form-form label {
-    margin-top: 1%;
-    font-weight: bold;
-    text-align: center
-}
-
-.form-form input {
-    width: 80%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-
-.form-form button {
-    margin-top: 5%;
-    width: 60%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.registration-form-type {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    width: 100%;
-    text-align: center;
-}
-
-.registration-form-type label {
-    margin-top: 1%;
-    font-weight: bold;
-    text-align: center;
-}
-
-.registration-form-type input {
-    width: 80%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }

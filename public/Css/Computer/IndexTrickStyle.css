@@ -22,22 +22,8 @@
     pointer-events: auto;
 }
 .scroll-top-fixed {
-    position: fixed;
-}
-
-.scroll-top-fixed:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
-}
-
-.scroll-top-fixed svg {
-    width: 32px;
-    height: 32px;
-}
-
-@media (max-width: 768px) {
-    .scroll-top-fixed {
-        bottom: 10%;
-    }
-
+    position: sticky;
+    top: 100vh;
+    grid-column: 1 / -1;
+    justify-self: end;
 }
