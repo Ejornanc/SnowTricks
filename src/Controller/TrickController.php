@@ -231,6 +231,9 @@ final class TrickController extends AbstractController
             $newSlug = $slugger->slug($cleanName)->lower();
             $trick->setSlug($newSlug);
 
+            // Explicitly set the updatedAt field to ensure it's updated
+            $trick->setUpdatedAt(new \DateTimeImmutable());
+
             $em->flush();
 
             $this->addFlash('success', 'Trick mis à jour avec succès.');
