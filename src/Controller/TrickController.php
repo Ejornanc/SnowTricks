@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class TrickController extends AbstractController
 {
@@ -84,6 +82,11 @@ final class TrickController extends AbstractController
             throw $this->createNotFoundException('Trick non trouvé');
         }
 
+        // Get the first 10 comments
+        $commentRepository = $em->getRepository(Comment::class);
+        $comments = $commentRepository->findByTrickWithPagination($trick->getId(), 10, 0);
+        $totalComments = $commentRepository->countByTrick($trick->getId());
+
         // Toujours définir $form avant le return
         $comment = new Comment();
         $comment->setTrick($trick);
@@ -107,6 +110,8 @@ final class TrickController extends AbstractController
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
+            'comments' => $comments,
+            'totalComments' => $totalComments,
             'commentForm' => $form->createView(),
         ]);
     }
@@ -233,6 +238,9 @@ final class TrickController extends AbstractController
             $newSlug = $slugger->slug($cleanName)->lower();
             $trick->setSlug($newSlug);
 
+            // Explicitly set the updatedAt field to ensure it's updated
+            $trick->setUpdatedAt(new \DateTimeImmutable());
+
             $em->flush();
 
             $this->addFlash('success', 'Trick mis à jour avec succès.');
@@ -247,4 +255,23 @@ final class TrickController extends AbstractController
     }
 
 
+    #[Route('/trick/{slug}/comments', name: 'trick_load_more_comments')]
+    public function loadMoreComments(string $slug, Request $request, EntityManagerInterface $em): Response
+    {
+        $trick = $em->getRepository(Trick::class)->findOneBy(['slug' => $slug]);
+
+        if (!$trick) {
+            throw $this->createNotFoundException('Trick non trouvé');
+        }
+
+        $offset = $request->query->getInt('offset', 0);
+        $limit = $request->query->getInt('limit', 10);
+
+        $commentRepository = $em->getRepository(Comment::class);
+        $comments = $commentRepository->findByTrickWithPagination($trick->getId(), $limit, $offset);
+
+        return $this->render('trick/_comments.html.twig', [
+            'comments' => $comments,
+        ]);
+    }
 }

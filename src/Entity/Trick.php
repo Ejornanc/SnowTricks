@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Enum\Difficulty;
 use App\Enum\TrickType;
-use App\Entity\Video;
 use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

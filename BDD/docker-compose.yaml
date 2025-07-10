@@ -1,0 +1,24 @@
+services:
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+  mysql:
+    container_name: SnowTricks-Mysql
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./MYSQL/DATA:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123user
+  phpmyadmin:
+    container_name: SnowTricks-Php-Myadmin
+    image: phpmyadmin
+    ports:
+      - "8088:80"
+    environment:
+      - PMA_HOSTS=mysql
+

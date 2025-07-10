@@ -5,10 +5,6 @@ namespace App\Form;
 use App\Enum\Difficulty;
 use App\Enum\TrickType;
 use App\Entity\Trick;
-use App\Entity\User;
-use App\Form\TrickImageType;
-use App\Form\VideoType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -40,14 +36,14 @@ class NewTricksForm extends AbstractType
                 'label' => false,
                 'choice_label' => fn (TrickType $choice) => ucfirst($choice->value),
                 'placeholder' => 'Choose a type',
-                'row_attr' => ['class' => 'new-trick-form-tricktype'],
+                'row_attr' => ['class' => 'new-trick-form-tricktype new-trick-mobile_form'],
             ])
             ->add('difficulty', EnumType::class, [
                 'class' => Difficulty::class,
                 'label' => false,
                 'choice_label' => fn (Difficulty $choice) => ucfirst($choice->value),
                 'placeholder' => 'Choose a difficulty',
-                'row_attr' => ['class' => 'new-trick-form-difficulty'],
+                'row_attr' => ['class' => 'new-trick-form-difficulty new-trick-mobile_form'],
             ])
             ->add('images', CollectionType::class, [
                 'entry_type' => TrickImageType::class,

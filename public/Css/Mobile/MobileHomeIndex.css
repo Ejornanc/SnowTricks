@@ -1,0 +1,56 @@
+@media only screen and (max-width: 768px) {
+    .mobile-only {
+        position: absolute;
+        display: block;
+        z-index: 10;
+    }
+    .Home-index h1 {
+        font-size: 1.8rem;
+    }
+
+    .Home-index p {
+        font-size: 0.95rem;
+    }
+
+    .scroll-btn {
+        width: 45px;
+        height: 45px;
+        bottom: 4%;
+        right: 4%;
+    }
+
+    .scroll-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .logo-mobile img {
+        width: auto;
+        height: 80px;
+    }
+
+    .logo-mobile {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .logo-mobile a{
+        font-weight: bold;
+        color: #ffffff;
+        text-decoration: none;
+        right: 20px;
+    }
+    .logo-mobile a:hover {
+        font-weight: bold;
+        color: #AEE1F9;
+        text-decoration: underline;
+    }
+
+    .logo-mobile li a {
+        display: inline-block; /* assure que margin fonctionne */
+        margin-left: 10px; /* ajuste la valeur selon ton besoin */
+    }
+}

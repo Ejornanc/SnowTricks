@@ -1,0 +1,203 @@
+@startuml
+' Interfaces
+interface MediaInterface {
+  +getId() : int
+  +getUrl() : string
+  +setUrl(url : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+}
+
+interface UserInterface {
+  +getUserIdentifier() : string
+  +getRoles() : array
+  +eraseCredentials() : void
+}
+
+interface PasswordAuthenticatedUserInterface {
+  +getPassword() : string
+}
+
+' Enums
+enum Difficulty: {
+  EASY = 'easy'
+  MEDIUM = 'medium'
+  HARD = 'hard'
+}
+
+enum TrickType:  {
+  GRABS = 'grabs'
+  SPINS = 'spins'
+  FLIPS = 'flips'
+  SLIDES_GRINDS = 'slides grinds'
+  BUTTER_TRICKS = 'butter tricks'
+  ONE_FOOT_TRICKS = 'one foot tricks'
+  FREESTYLE_AERIAL_TRICKS = 'freestyle aerial tricks'
+}
+
+' Classes
+class User implements UserInterface, PasswordAuthenticatedUserInterface {
+  +id : int
+  +username : string
+  +email : string
+  +password : string
+  +createdAt : DateTimeImmutable
+  +isVerified : bool
+  +verificationToken : string
+  +image : string
+  +tricks : Collection<Trick>
+  +comments : Collection<Comment>
+  +tricks2 : Collection<Trick>
+  +getId() : int
+  +getUsername() : string
+  +setUsername(username : string) : static
+  +getEmail() : string
+  +setEmail(email : string) : static
+  +getPassword() : string
+  +setPassword(password : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUserIdentifier() : string
+  +getRoles() : array
+  +eraseCredentials() : void
+  +isVerified() : bool
+  +setIsVerified(isVerified : bool) : static
+  +getImage() : string
+  +setImage(image : string) : self
+  +getVerificationToken() : string
+  +setVerificationToken(verificationToken : string) : self
+  +getTricks() : Collection
+  +addTrick(trick : Trick) : static
+  +removeTrick(trick : Trick) : static
+  +getComments() : Collection
+  +addComment(comment : Comment) : static
+  +removeComment(comment : Comment) : static
+}
+
+class Trick {
+  +id : int
+  +name : string
+  +slug : string
+  +description : string
+  +difficulty : Difficulty
+  +tricktype : TrickType
+  +createdAt : DateTimeImmutable
+  +updatedAt : DateTimeImmutable
+  +user : User
+  +comments : Collection<Comment>
+  +images : Collection<Image> [cascade: persist, remove; orphanRemoval: true]
+  +videos : Collection<Video> [cascade: persist, remove; orphanRemoval: true]
+  +getId() : int
+  +getName() : string
+  +setName(name : string) : static
+  +getSlug() : string
+  +setSlug(slug : string) : static
+  +getDescription() : string
+  +setDescription(description : string) : static
+  +getDifficulty() : Difficulty
+  +setDifficulty(difficulty : Difficulty) : static
+  +getTrickType() : TrickType
+  +setTrickType(trickType : TrickType) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUpdatedAt() : DateTimeImmutable
+  +setUpdatedAt(updatedAt : DateTimeImmutable) : static
+  +getUser() : User
+  +setUser(user : User) : static
+  +getComments() : Collection
+  +addComment(comment : Comment) : static
+  +removeComment(comment : Comment) : static
+  +getImages() : Collection
+  +addImage(image : Image) : static
+  +removeImage(image : Image) : static
+  +getVideos() : Collection
+  +addVideo(video : Video) : static
+  +removeVideo(video : Video) : static
+  +setUpdatedAtValue() : void
+}
+
+class Comment {
+  +id : int
+  +content : string
+  +createdAt : DateTimeImmutable
+  +user : User [onDelete: SET NULL]
+  +trick : Trick [onDelete: CASCADE]
+  +getId() : int
+  +getContent() : string
+  +setContent(content : string) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUser() : User
+  +setUser(user : User) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+}
+
+class Image implements MediaInterface {
+  +id : int
+  +url : string
+  +isFeatured : bool
+  +createdAt : DateTimeImmutable
+  +updatedAt : DateTimeImmutable
+  +imageFile : File
+  +trick : Trick [onDelete: CASCADE]
+  +getId() : int
+  +getUrl() : string
+  +setUrl(url : string) : static
+  +isFeatured() : bool
+  +setIsFeatured(isFeatured : bool) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getUpdatedAt() : DateTimeInterface
+  +setUpdatedAt(updatedAt : DateTimeInterface) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+  +getImageFile() : File
+  +setImageFile(file : File) : void
+}
+
+class Video implements MediaInterface {
+  +id : int
+  +url : string
+  -skipValidation : bool
+  +createdAt : DateTimeImmutable
+  +trick : Trick [onDelete: CASCADE]
+  +getId() : int
+  +getUrl() : string
+  +setUrl(url : string) : static
+  +isSkipValidation() : bool
+  +setSkipValidation(skipValidation : bool) : static
+  +getCreatedAt() : DateTimeImmutable
+  +setCreatedAt(createdAt : DateTimeImmutable) : static
+  +getTrick() : Trick
+  +setTrick(trick : Trick) : static
+  +formatUrl() : void
+}
+
+' Relationships
+User "1" --> "*" Trick : creates > [SET NULL]
+User "1" --> "*" Trick : creates > [orphanRemoval]
+User "1" --> "*" Comment : writes > [SET NULL]
+
+Trick "*" --> "1" User : belongs to > [SET NULL]
+Trick "1" --> "*" Comment : has > [CASCADE]
+Trick "1" --> "*" Image : has > [CASCADE, orphanRemoval]
+Trick "1" --> "*" Video : has > [CASCADE, orphanRemoval]
+Trick --> Difficulty : has difficulty
+Trick --> TrickType : has trickType
+
+Comment "*" --> "1" Trick : belongs to > [CASCADE]
+Comment "*" --> "1" User : written by > [SET NULL]
+
+Image "*" --> "1" Trick : belongs to > [CASCADE]
+Video "*" --> "1" Trick : belongs to > [CASCADE]
+
+' Interface implementations
+Image ..|> MediaInterface
+Video ..|> MediaInterface
+User ..|> UserInterface
+User ..|> PasswordAuthenticatedUserInterface
+
+@enduml

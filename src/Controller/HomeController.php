@@ -18,10 +18,4 @@ final class HomeController extends AbstractController
         ] );
     }
 
-    #[Route('/unused', name: 'unused')]
-    public function unused(): Response
-    {
-        return $this->render('home/unused.html.twig', ['controller_name' => 'BlogController']);
-    }
-
 }
