@@ -15,38 +15,51 @@ alt trick not found
     TC --> User: throw NotFoundException
 else trick found
     TC -> TC: check if user is authenticated
-    
+
     alt user not authenticated
         TC --> User: redirect to login page
     else user authenticated
+        TC -> TC: mark videos as skipValidation
+        note right of TC: Set skipValidation=true for existing videos
+
         TC -> NTF: createForm(NewTricksForm::class, trick)
         NTF --> TC: form with trick data
         TC -> User: display edit form
-        
+
         User -> TC: submit form (name, description, difficulty, trickType, images, videos)
         TC -> NTF: handleRequest(request)
         NTF --> TC: form with data
-        
+
+        TC -> TC: check modified videos
+        note right of TC: Set skipValidation=false for modified videos
+
         alt form is not valid but has images
             TC -> TC: process images
             note right of TC: Add new image if last image has file
+            TC -> TC: reapply skipValidation for videos
             TC -> NTF: createForm(NewTricksForm::class, trick)
             NTF --> TC: form with updated data
             TC --> User: display form with errors
         else form is valid
             TC -> TC: process images
             note right of TC: Remove empty images
-            
+
+            TC -> TC: ensure only one featured image
+            note right of TC: Set first image as featured if none is marked
+
+            TC -> TC: restore original URLs for unmodified videos
+            note right of TC: Skip validation for unmodified videos
+
             TC -> TC: createSlug(name)
             note right of TC: Generate new slug from name
-            
+
             TC -> EM: flush()
             note right of EM: UPDATE tricks, images, videos
-            
+
             EM -> DB: UPDATE data
             DB --> EM: data updated
             EM --> TC: success
-            
+
             TC -> TC: addFlash('success', 'Trick mis à jour avec succès.')
             TC --> User: redirect to trick detail page
         else form is invalid

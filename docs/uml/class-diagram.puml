@@ -47,6 +47,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
   +isVerified : bool
   +verificationToken : string
   +image : string
+  +tricks : Collection<Trick>
+  +comments : Collection<Comment>
   +getId() : int
   +getUsername() : string
   +setUsername(username : string) : static
@@ -65,6 +67,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
   +setImage(image : string) : self
   +getVerificationToken() : string
   +setVerificationToken(verificationToken : string) : self
+  +__toString() : string
+  +generateRandomKey() : void
+  +getTricks() : Collection
+  +addTrick(trick : Trick) : static
+  +removeTrick(trick : Trick) : static
+  +getComments() : Collection
+  +addComment(comment : Comment) : static
+  +removeComment(comment : Comment) : static
 }
 
 class Trick {
@@ -73,7 +83,7 @@ class Trick {
   +slug : string
   +description : string
   +difficulty : Difficulty
-  +trickType : TrickType
+  +tricktype : TrickType
   +createdAt : DateTimeImmutable
   +updatedAt : DateTimeImmutable
   +user : User
@@ -95,6 +105,7 @@ class Trick {
   +setCreatedAt(createdAt : DateTimeImmutable) : static
   +getUpdatedAt() : DateTimeImmutable
   +setUpdatedAt(updatedAt : DateTimeImmutable) : static
+  +setUpdatedAtValue() : void
   +getUser() : User
   +setUser(user : User) : static
   +getComments() : Collection
@@ -114,6 +125,7 @@ class Comment {
   +createdAt : DateTimeImmutable
   +user : User
   +trick : Trick
+  +__construct()
   +getId() : int
   +getContent() : string
   +setContent(content : string) : static
@@ -128,6 +140,7 @@ class Comment {
 class Image implements MediaInterface {
   +id : int
   +url : string
+  +isFeatured : bool
   +createdAt : DateTimeImmutable
   +updatedAt : DateTimeImmutable
   +imageFile : File
@@ -143,11 +156,14 @@ class Image implements MediaInterface {
   +setTrick(trick : Trick) : static
   +getImageFile() : File
   +setImageFile(file : File) : void
+  +isFeatured() : bool
+  +setIsFeatured(isFeatured : bool) : static
 }
 
 class Video implements MediaInterface {
   +id : int
   +url : string
+  +skipValidation : bool
   +createdAt : DateTimeImmutable
   +trick : Trick
   +getId() : int
@@ -157,6 +173,8 @@ class Video implements MediaInterface {
   +setCreatedAt(createdAt : DateTimeImmutable) : static
   +getTrick() : Trick
   +setTrick(trick : Trick) : static
+  +isSkipValidation() : bool
+  +setSkipValidation(skipValidation : bool) : static
   +formatUrl() : void
 }
 
