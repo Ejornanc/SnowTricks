@@ -31,11 +31,6 @@
     text-decoration: underline;
 }
 
-header h1 {
-    color: #ffffff;
-    padding: 1px;
-}
-
 .navbar-container {
     flex: 1;
     display: flex;
