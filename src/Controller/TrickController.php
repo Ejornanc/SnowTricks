@@ -144,18 +144,42 @@ final class TrickController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        // Marquer les vidéos existantes pour sauter la validation
+        foreach ($trick->getVideos() as $video) {
+            $video->setSkipValidation(true);
+        }
+
         // Utilise le même formulaire que la création (NewTricksForm)
         $form = $this->createForm(NewTricksForm::class, $trick);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && !$form->isValid()) {
-            $images = $trick->getImages();
-            if (!$images->isEmpty()) {
-                $lastImage = $images->last();
-                if ($lastImage?->getImageFile()) {
-                    $trick->addImage(new \App\Entity\Image());
-                    $form = $this->createForm(NewTricksForm::class, $trick);
-                    $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            // Réinitialiser skipValidation pour les vidéos modifiées
+            foreach ($form->get('videos') as $key => $videoForm) {
+                $isModified = $videoForm->get('isModified')->getData();
+                if ($isModified === '1') {
+                    $video = $trick->getVideos()->get($key);
+                    if ($video) {
+                        $video->setSkipValidation(false);
+                    }
+                }
+            }
+
+            if (!$form->isValid()) {
+                $images = $trick->getImages();
+                if (!$images->isEmpty()) {
+                    $lastImage = $images->last();
+                    if ($lastImage?->getImageFile()) {
+                        $trick->addImage(new \App\Entity\Image());
+
+                        // Réappliquer skipValidation pour les vidéos non modifiées
+                        foreach ($trick->getVideos() as $video) {
+                            $video->setSkipValidation(true);
+                        }
+
+                        $form = $this->createForm(NewTricksForm::class, $trick);
+                        $form->handleRequest($request);
+                    }
                 }
             }
         }
@@ -163,10 +187,45 @@ final class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Supprimer les images vides
             foreach ($trick->getImages() as $image) {
-                if ($image->getImageFile() === null) {
+                // Si aucune nouvelle image n’a été uploadée, conserver l’existante
+                if ($image->getImageFile() === null && $image->getUrl() === null) {
                     $trick->removeImage($image);
                 } else {
                     $image->setTrick($trick);
+                }
+            }
+
+            // S'assurer qu'une seule image est marquée comme featured
+            $featuredFound = false;
+            foreach ($trick->getImages() as $image) {
+                if ($image->isFeatured()) {
+                    if ($featuredFound) {
+                        // Si une autre image est déjà marquée comme featured, désactiver celle-ci
+                        $image->setIsFeatured(false);
+                    } else {
+                        $featuredFound = true;
+                    }
+                }
+            }
+
+            // Si aucune image n'est marquée comme featured, marquer la première
+            if (!$featuredFound && !$trick->getImages()->isEmpty()) {
+                $trick->getImages()->first()->setIsFeatured(true);
+            }
+
+            // Traiter les vidéos
+            foreach ($form->get('videos') as $key => $videoForm) {
+                $isModified = $videoForm->get('isModified')->getData();
+                // Si la vidéo n'a pas été modifiée, on restaure l'URL originale
+                if ($isModified !== '1') {
+                    $video = $trick->getVideos()->get($key);
+                    if ($video) {
+                        // Restaurer l'URL originale depuis la base de données
+                        $originalVideo = $em->getRepository(Video::class)->find($video->getId());
+                        if ($originalVideo) {
+                            $video->setUrl($originalVideo->getUrl());
+                        }
+                    }
                 }
             }
 

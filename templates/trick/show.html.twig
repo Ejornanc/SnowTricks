@@ -13,10 +13,20 @@
         {# === Trouver une image pour la bannière === #}
         {% set bannerImage = null %}
         {% for image in trick.images %}
-            {% if loop.first %}
+            {% if image.isFeatured %}
                 {% set bannerImage = asset('uploads/tricks/images/' ~ image.url) %}
+                {% set featuredFound = true %}
             {% endif %}
         {% endfor %}
+
+        {# Si aucune image n'est marquée comme featured, utiliser la première #}
+        {% if bannerImage is null %}
+            {% for image in trick.images %}
+                {% if loop.first %}
+                    {% set bannerImage = asset('uploads/tricks/images/' ~ image.url) %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
 
         {% if bannerImage is null %}
             {% set bannerImage = asset('Images/no_image_available.png') %}

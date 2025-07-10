@@ -14,12 +14,24 @@
                 <a href="{{ path('trick_show', { slug: trick.slug }) }}" class="card-link">
                     {# Image Trick #}
                     {% set displayed = false %}
+
+                    {# D'abord chercher l'image featured #}
                     {% for image in trick.images %}
-                        {% if not displayed %}
+                        {% if image.isFeatured and not displayed %}
                             <img src="{{ asset('uploads/tricks/images/' ~ image.url) }}" alt="Image de {{ trick.name }}" class="card-image">
                             {% set displayed = true %}
                         {% endif %}
                     {% endfor %}
+
+                    {# Si pas d'image featured, prendre la première #}
+                    {% if not displayed %}
+                        {% for image in trick.images %}
+                            {% if not displayed %}
+                                <img src="{{ asset('uploads/tricks/images/' ~ image.url) }}" alt="Image de {{ trick.name }}" class="card-image">
+                                {% set displayed = true %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                     {% if not displayed %}
                         <img src="{{ asset('Images/no_image_available.png') }}" alt="Aucune image disponible" class="card-image-default">
                     {% endif %}

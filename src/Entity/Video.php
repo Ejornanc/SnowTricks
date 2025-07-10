@@ -20,6 +20,8 @@ class Video implements MediaInterface
     #[VideoUrl]
     private ?string $url = null;
 
+    private bool $skipValidation = false;
+
     #[ORM\Column(nullable: false)]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -71,14 +73,29 @@ class Video implements MediaInterface
         return $this;
     }
 
+    public function isSkipValidation(): bool
+    {
+        return $this->skipValidation;
+    }
+
+    public function setSkipValidation(bool $skipValidation): static
+    {
+        $this->skipValidation = $skipValidation;
+        return $this;
+    }
+
     #[ORM\PreUpdate]
     #[ORM\PrePersist]
     public function formatUrl(): void
     {
+        // Ne pas formater l'URL si on doit sauter la validation
+        if ($this->skipValidation) {
+            return;
+        }
+
         if (preg_match(VideoUrlValidator::SRC_REGEX, $this->url, $matches)) {
             $this->url = $matches[1];
         } else {
-
             $this->url = null;
         }
     }

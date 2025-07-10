@@ -18,8 +18,14 @@ class VideoType extends AbstractType
                 'attr' => [
                     'placeholder' => '<iframe src="..."></iframe>',
                     'rows' => 3,
+                    'class' => 'video-url-input',
                 ],
                 'required' => false,
+            ])
+            ->add('isModified', \Symfony\Component\Form\Extension\Core\Type\HiddenType::class, [
+                'mapped' => false,
+                'attr' => ['class' => 'video-is-modified'],
+                'data' => '0',
             ]);
     }
 
