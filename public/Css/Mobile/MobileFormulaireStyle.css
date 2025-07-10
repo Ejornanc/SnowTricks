@@ -3,5 +3,9 @@
     .form-form button {
         border-radius: 50px;
     }
+    .new-trick-mobile_form {
+        width: 100%;
+    }
+
 
 }

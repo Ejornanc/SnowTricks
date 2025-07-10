@@ -40,14 +40,14 @@ class NewTricksForm extends AbstractType
                 'label' => false,
                 'choice_label' => fn (TrickType $choice) => ucfirst($choice->value),
                 'placeholder' => 'Choose a type',
-                'row_attr' => ['class' => 'new-trick-form-tricktype'],
+                'row_attr' => ['class' => 'new-trick-form-tricktype new-trick-mobile_form'],
             ])
             ->add('difficulty', EnumType::class, [
                 'class' => Difficulty::class,
                 'label' => false,
                 'choice_label' => fn (Difficulty $choice) => ucfirst($choice->value),
                 'placeholder' => 'Choose a difficulty',
-                'row_attr' => ['class' => 'new-trick-form-difficulty'],
+                'row_attr' => ['class' => 'new-trick-form-difficulty new-trick-mobile_form'],
             ])
             ->add('images', CollectionType::class, [
                 'entry_type' => TrickImageType::class,

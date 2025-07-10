@@ -5,9 +5,6 @@
 .idea
 .vscode
 
-# BDD Files
-BDD
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -31,5 +28,3 @@ BDD
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/
-###< symfony/asset-mapper ###
-/public/uploads/tricks/images/

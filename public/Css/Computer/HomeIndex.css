@@ -61,24 +61,12 @@ html {
     height: 24px;
     stroke: white;
 }
-@media (max-width: 768px) {
-    .Home-index h1 {
-        font-size: 1.8rem;
-    }
 
-    .Home-index p {
-        font-size: 0.95rem;
-    }
+.logo li a {
+    display: inline-block; /* assure que margin fonctionne */
+    margin-left: 10px; /* ajuste la valeur selon ton besoin */
+}
 
-    .scroll-btn {
-        width: 45px;
-        height: 45px;
-        bottom: 4%;
-        right: 4%;
-    }
-
-    .scroll-btn svg {
-        width: 20px;
-        height: 20px;
-    }
+.mobile-only {
+    display: none;
 }

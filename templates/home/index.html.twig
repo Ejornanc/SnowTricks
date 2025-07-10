@@ -5,11 +5,14 @@
 {% block head %}
     {{ parent() }}
         <link rel="stylesheet" href="{{ asset('Css/Computer/HomeIndex.css') }}">
+        <link rel="stylesheet" href="{{ asset('Css/Mobile/MobileHomeIndex.css') }}">
 {% endblock %}
 
 {% block content %}
+
     <section class="Home-banner" id="top">
         <div class="Home-index">
+
             <h1>Bienvenue sur Snowtricks</h1>
             <p>
                 Lorem ipsum dolor sit amet eirmod odio elitr nibh et tincidunt enim sit stet et tempor consequat labore diam gubergren id est. Consetetur vel mazim eum ea illum nonummy. Dolor laoreet et est lorem sit velit rebum takimata consetetur voluptua.
@@ -21,6 +24,16 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
             </svg>
         </a>
+        {% if app.user %}
+            <div class="logo-mobile mobile-only">
+                <a href="/"><img src="{{ asset('Images/Logo_SnowTricks.png') }}" alt="SnowTricks logo"></a>
+                <li><a href="{{ path('user_profile') }}">Snowboarder<br>{{ app.user.userIdentifier }}</a></li>
+            </div>
+        {% else %}
+            <div class="logo-mobile mobile-only">
+                <a href="/"><img src="{{ asset('Images/Snowtricks_Logo.png') }}" alt="SnowTricks logo"></a>
+            </div>
+        {% endif %}
         <img src="{{ asset('Images/accueil.jpg') }}" alt="bannière" class="Home-image">
     </section>
 
