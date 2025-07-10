@@ -35,7 +35,7 @@
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: ghostwhite;
 }
 
 /* ===== Media Gallery Actions ===== */
@@ -220,7 +220,7 @@
 .media-item [id^="video-field-"] {
     margin-top: 10px;
     padding: 10px;
-    background-color: white;
+    background-color:whitesmoke;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -235,8 +235,6 @@
 .media-item [id^="image-field-"] input,
 .media-item [id^="video-field-"] input,
 .media-item [id^="video-field-"] textarea {
-    width: 100%;
-    padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;

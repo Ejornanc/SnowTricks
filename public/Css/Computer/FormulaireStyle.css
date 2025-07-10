@@ -68,3 +68,8 @@
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
+.form-form button[type="submit"] {
+    margin-top: 20%; /* ajuste la valeur selon ton design */
+    background-color: #4CAF50;
+}
