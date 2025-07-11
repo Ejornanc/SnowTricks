@@ -48,7 +48,7 @@ DATABASE_URL="mysql://username:password@127.0.0.1:3306/snowtricks?serverVersion=
 ### 5. Créer les containers Docker (Mailhog, MySQL, phpMyAdmin)
 
 ```bash
-docker compose -f BDD/docker-compose.yaml -p SnowTricks up -d
+docker compose -f BDD/docker-compose.yaml -p snowtricks up -d
 ```
 
 ### 6. Démarrer le serveur de développement
